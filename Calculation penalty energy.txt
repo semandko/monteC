@@ -1,0 +1,5 @@
+ 
+Penalty = Function[{iota, phi},
+   x = SiliconOxide[[iota - 1, phi]] + SiliconOxide[[iota, Mod[phi + 1, maxj]]] + SiliconOxide[[Mod[iota + 1, maxi], phi]] + SiliconOxide[[iota, phi - 1]];
+   Delta[[x + 1]]
+];
