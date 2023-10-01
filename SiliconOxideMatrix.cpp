@@ -2,23 +2,22 @@
 #include "SiliconOxideMatrix.h"
 #include <iostream>
 #include <map>
-
+#include <cmath>
+#include <random>
 
 SiliconOxideMatrix::SiliconOxideMatrix() {
 	maxi = _NUM_ROWS;
 	maxj = _NUM_COLS;
-	data.resize(maxi, std::vector<double>(maxj, 8)); // Initialize the data vector
+	data.resize(maxi, std::vector<double>(maxj, 1)); // Initialize the data vector
 }
 
 SiliconOxideMatrix::~SiliconOxideMatrix() {
 	
 }
 
-void SiliconOxideMatrix::fillMatrix() {
-	
+void SiliconOxideMatrix::fillMatrix() {	
     for (int i = 0; i < maxi-1; i++) {
         for (int j = 0; j < maxj-1; j++) {
-        	data[i][j] = 1.0;
 			if (!((i+1) % 2 == 1) && !((j+1)% 2 == 1)) {
     			data[i][j] = 0.0;
 			}
@@ -94,6 +93,27 @@ void SiliconOxideMatrix::printMatrixToImage(const std::string& fileName) {
         std::cout << "Matrix has been saved as image map.ppm " << fileName << std::endl;
     } else {
         std::cerr << "Unable to save the image map.ppm" << fileName << std::endl;
+    }
+}
+
+double SiliconOxideMatrix::randomGenerator(unsigned int first_interval, unsigned int last_interval) {
+	// Create a random number generator engine
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<double> dist(first_interval, last_interval); // Create a uniform distribution in the range [first_interval, last_interval]
+    return dist(gen);
+}
+
+bool SiliconOxideMatrix::metropolisCondition(double a, double b) {
+	
+	double randomValue = randomGenerator(0, 1); // Generate a random number in the range [0, 1]
+	double metropolisValue = exp(-((b - a) / kT_eV)); // Calculate the Metropolis condition value
+
+    // Compare the random value with the Metropolis value
+    if (randomValue > metropolisValue) {
+        return false; // Reject the move
+    } else {
+        return true; // Accept the move
     }
 }
 

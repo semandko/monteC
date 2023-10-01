@@ -31,6 +31,8 @@ public:
     int calculationNumOxigen(int i, int j);
     void printMatrixToFile(const std::string& fileName);
     void printMatrixToImage(const std::string& fileName);
+    bool metropolisCondition(double a, double b);
+    double randomGenerator(unsigned int first_interval, unsigned int last_interval);
      
 private:
     int maxi;
