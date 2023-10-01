@@ -11,6 +11,7 @@
 #define _K_B (_CONST_A / _CONST_B)
 #define _X_0 0.1
 #define _T 1000
+#define _kT_EV(_T) (1.0 / 11604 * (_T + 273.15)) // 0.11 eV for 1000 C
 #define _NUM_ROWS 30
 #define _NUM_COLS 30
 
@@ -20,16 +21,16 @@ public:
 	
 	SiliconOxideMatrix();
 	~SiliconOxideMatrix();
-    SiliconOxideMatrix(int numRows, int numCols);
     
     void fillMatrix();
-    void printMatrixToFile(const std::string& fileName);
-    void printMatrixToImage(const std::string& fileName);
-    
     double Penalty(int iota, int phi);
     void initializeArrayO();
     void updateArrayOLoop(std::vector<std::pair<int, int>>& ArrayO);
     void updateDataMatrix(std::vector<std::pair<int, int>>& ArrayO);
+    
+    int calculationNumOxigen(int i, int j);
+    void printMatrixToFile(const std::string& fileName);
+    void printMatrixToImage(const std::string& fileName);
      
 private:
     int maxi;
@@ -40,6 +41,7 @@ private:
     double penaltyValue;
     double x0 = _X_0;
     double kB = _K_B;
+    double kT_eV = _kT_EV(_T);
     int T = _T;
     int maxIterations = static_cast<int>((maxi * maxj * x0) / 4);
         	  

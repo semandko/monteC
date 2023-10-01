@@ -1,25 +1,29 @@
 // SiliconOxideMatrix.cpp
 #include "SiliconOxideMatrix.h"
 #include <iostream>
+#include <map>
+
 
 SiliconOxideMatrix::SiliconOxideMatrix() {
-	
+	maxi = _NUM_ROWS;
+	maxj = _NUM_COLS;
+	data.resize(maxi, std::vector<double>(maxj, 8)); // Initialize the data vector
 }
 
 SiliconOxideMatrix::~SiliconOxideMatrix() {
 	
 }
 
-SiliconOxideMatrix::SiliconOxideMatrix(int numRows, int numCols) : maxi(numRows), maxj(numCols) {
-    data.resize(maxi, std::vector<double>(maxj, 0.0)); // Initialize the data vector with zeros
-}
-
 void SiliconOxideMatrix::fillMatrix() {
-    for (int i = 0; i < maxi; i++) {
-        for (int j = 0; j < maxj; j++) {
-            data[i][j] = 0.0;
+	
+    for (int i = 0; i < maxi-1; i++) {
+        for (int j = 0; j < maxj-1; j++) {
+        	data[i][j] = 1.0;
+			if (!((i+1) % 2 == 1) && !((j+1)% 2 == 1)) {
+    			data[i][j] = 0.0;
+			}
         }
-    }
+    } 
 }
 
 void SiliconOxideMatrix::printMatrixToFile(const std::string& fileName) {
@@ -40,27 +44,52 @@ void SiliconOxideMatrix::printMatrixToFile(const std::string& fileName) {
     }
 }
 
+// Method to calculate the number of oxygen atoms and handle boundary transitions
+int SiliconOxideMatrix::calculationNumOxigen(int i, int j) { 
+    int value = 0;
+    // Calculate the number of adjacent cells with value -1
+    if (data[i - 1][j] == -1) {
+        ++value;
+    }   
+    if (data[i + 1][j] == -1) {
+        ++value;
+    }
+    if (data[i][j - 1] == -1) {
+        ++value;
+    }
+    if (data[i][j + 1] == -1) {
+        ++value;
+    }
+    return value; // Return the calculated value
+}
+
 void SiliconOxideMatrix::printMatrixToImage(const std::string& fileName) {
     std::ofstream outputFile(fileName);
-
+    
     if (outputFile.is_open()) {
         outputFile << "P3\n" << maxj << " " << maxi << "\n255\n";
+        // Define a map to associate values with colors
+        std::map<int, std::string> colorMap;
+        colorMap[0] = "0 0 0 ";        // Black
+        colorMap[1] = "255 0 0 ";      // Red
+        colorMap[2] = "0 0 255 ";      // Blue
+        colorMap[3] = "0 255 0 ";      // Green
+        colorMap[4] = "255 255 0 ";    // Yellow
 
-        for (int i = 0; i < maxi; i++) {
-            for (int j = 0; j < maxj; j++) {
-                double value = data[i][j];
-
-                if (value == 0.0) {
-                    // Set red color
-                    outputFile << "255 0 0 ";
-                } else {
-                    // Set other color (e.g., white)
-                    outputFile << "255 255 255 ";
+        for (int i = 0; i < maxi - 1; i++) {
+            for (int j = 0; j < maxj - 1; j++) {
+                if ((i + 1) % 2 && (j + 1) % 2) { // [even][even] position calculation
+                    unsigned int value = calculationNumOxigen(i, j); // Number of oxygen atoms calculation
+                    // Use the color map to set the color based on the value
+                    if (colorMap.find(value) != colorMap.end()) {
+                        outputFile << colorMap[value];
+                    } else {
+                        outputFile << "255 255 255 "; // Default to white for unknown values
+                    }
                 }
             }
             outputFile << "\n";
         }
-
         outputFile.close();
         std::cout << "Matrix has been saved as image map.ppm " << fileName << std::endl;
     } else {

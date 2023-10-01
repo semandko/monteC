@@ -21,10 +21,10 @@ void configurator (void)
 	std::cout << "Matrix has numRows " << numRows << std::endl;
 	std::cout << "Matrix has numCols " << numCols << std::endl;
 	
-    SiliconOxideMatrix matrix(numRows, numCols);
+    SiliconOxideMatrix matrix;
 
     matrix.fillMatrix();
     matrix.printMatrixToFile("map.txt");
     matrix.printMatrixToImage("map.ppm");
-    matrix.initializeArrayO();
+    //matrix.initializeArrayO();
 }
