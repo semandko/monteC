@@ -23,7 +23,7 @@ public:
 	~SiliconOxideMatrix();
     
     void fillMatrix();
-    double Penalty(int iota, int phi);
+    double Penalty(int i, int j);
     void initializeArrayO();
     void updateArrayOLoop(std::vector<std::pair<int, int>>& ArrayO);
     void updateDataMatrix(std::vector<std::pair<int, int>>& ArrayO);
@@ -33,7 +33,8 @@ public:
     void printMatrixToImage(const std::string& fileName);
     bool metropolisCondition(double a, double b);
     double randomGenerator(unsigned int first_interval, unsigned int last_interval);
-     
+    void evolution(void);
+	 
 private:
     int maxi;
     int maxj;

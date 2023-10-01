@@ -97,8 +97,7 @@ void SiliconOxideMatrix::printMatrixToImage(const std::string& fileName) {
 }
 
 double SiliconOxideMatrix::randomGenerator(unsigned int first_interval, unsigned int last_interval) {
-	// Create a random number generator engine
-    std::random_device rd;
+    std::random_device rd; // Create a random number generator engine
     std::mt19937 gen(rd());
     std::uniform_real_distribution<double> dist(first_interval, last_interval); // Create a uniform distribution in the range [first_interval, last_interval]
     return dist(gen);
@@ -117,15 +116,20 @@ bool SiliconOxideMatrix::metropolisCondition(double a, double b) {
     }
 }
 
-double SiliconOxideMatrix::Penalty(int iota, int phi) {
-    int x = static_cast<int>(data[iota - 1][phi]) +
-            static_cast<int>(data[iota][((phi + 1) % maxj)]) +
-            static_cast<int>(data[(iota + 1) % maxi][phi]) +
-            static_cast<int>(data[iota][phi - 1]);
 
-    return Delta[x + 1];
+void SiliconOxideMatrix::evolution(void){
+	unsigned int iteration = 1000000000;
+	
+	
 }
 
+double SiliconOxideMatrix::Penalty(int i, int j) {
+    return Delta[calculationNumOxigen(i, j)];
+}
+
+
+
+// Oxigen init procedurec
 void SiliconOxideMatrix::updateDataMatrix(std::vector<std::pair<int, int>>& ArrayO) {
     int index = rand() % ArrayO.size();
     data[ArrayO[index].first][ArrayO[index].second] = 1;
@@ -141,8 +145,7 @@ void SiliconOxideMatrix::updateArrayOLoop(std::vector<std::pair<int, int>>& Arra
     }
 }
 
-void SiliconOxideMatrix::initializeArrayO() {
-	
+void SiliconOxideMatrix::initializeArrayO() {	
     // Create ArrayO by iterating over coordinates
     for (int n = 1; n <= maxi / 2; n++) {
         for (int m = 1; m <= maxj / 2; m++) {
