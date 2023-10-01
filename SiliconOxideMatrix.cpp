@@ -116,11 +116,37 @@ bool SiliconOxideMatrix::metropolisCondition(double a, double b) {
     }
 }
 
+bool SiliconOxideMatrix::isOxygenInCell(int i, int j) {
+    if ((i % 2 == 0 && j % 2 == 1) || (i % 2 == 1 && j % 2 == 0)) {
+        // Check if it's an [even][odd] or [odd][even] cell
+        if (data[i][j] == -1) {
+            return true; // Element in [even][odd] or [odd][even] cell is -1
+        }
+    }
+    return false; // Element is not in [even][odd] or [odd][even] cell or is not -1
+}
 
-void SiliconOxideMatrix::evolution(void){
-	unsigned int iteration = 1000000000;
-	
-	
+bool SiliconOxideMatrix::findingOxigeninCeil(int &index_i, int & index_j) {
+    while (!isOxygenInCell(index_i, index_j)) {
+    	index_i = rand() % maxi;
+    	index_j = rand() % maxj;
+	}
+	return true;
+}
+
+void SiliconOxideMatrix::evolution(void) {
+    unsigned int iteration = 1000000000;
+
+    while (iteration--) {
+
+        int index_i = rand() % maxi;
+        int index_j = rand() % maxj;
+
+		findingOxigeninCeil(index_i, index_j);
+        
+        // Process the cell with data[index_i][index_j]
+        // ...
+    }
 }
 
 double SiliconOxideMatrix::Penalty(int i, int j) {

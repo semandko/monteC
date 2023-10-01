@@ -34,6 +34,8 @@ public:
     bool metropolisCondition(double a, double b);
     double randomGenerator(unsigned int first_interval, unsigned int last_interval);
     void evolution(void);
+    bool isOxygenInCell(int i, int j);
+    bool findingOxigeninCeil(int &index_i, int & index_j);
 	 
 private:
     int maxi;
