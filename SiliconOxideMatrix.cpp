@@ -5,42 +5,116 @@
 #include <cmath>
 #include <random>
 
-SiliconOxideMatrix::SiliconOxideMatrix() {
-	maxi = _NUM_ROWS;
-	maxj = _NUM_COLS;
+SiliconOxideMatrix::SiliconOxideMatrix()
+{
+	maxi = 10;
+	maxj = 10;
+    generalNumberOfAtoms = maxi * maxj;
+    numberOfOxygenAtoms = 0; // zero by default
 	data.resize(maxi, std::vector<double>(maxj, 1)); // Initialize the data vector
 }
 
-SiliconOxideMatrix::~SiliconOxideMatrix() {
-	
+SiliconOxideMatrix::~SiliconOxideMatrix()
+{
+	// at the moment empty
 }
 
-void SiliconOxideMatrix::fillMatrix() {	
-    for (int i = 0; i < maxi-1; i++) {
-        for (int j = 0; j < maxj-1; j++) {
-			if (!((i+1) % 2 == 1) && !((j+1)% 2 == 1)) {
-    			data[i][j] = 0.0;
-			}
+void SiliconOxideMatrix::fillMatrix()
+{	
+    for (int i = 0; i < maxi; ++i)
+    {
+        for (int j = 0; j < maxj; ++j)
+        {
+            // according to the mathematics theory - array starts from index 1, so decide to adapt C++ array indexing to mathematics
+            if ((1 == i % 2) && (1 == j % 2)) // Kremniy places
+            {
+                data[i][j] = 0.0;
+            }
+            else if ((0 == i % 2) && (0 == j % 2)) // ??? N/A places
+            {
+                data[i][j] = 9.0;
+            }
+            else if (((1 == i % 2) && (0 == j % 2)) || ((0 == i % 2) && (1 == j % 2))) // Oxygen places
+            {
+                data[i][j] = 1.0;
+                allPossibleOxygenPlaces.push_back({true, {i, j}});
+            }
+            else
+            {
+                // empty at the moment
+            }
         }
     } 
 }
 
-void SiliconOxideMatrix::printMatrixToFile(const std::string& fileName) {
-	
+void SiliconOxideMatrix::printMatrixToFile(const std::string& fileName)
+{
     std::ofstream outputFile(fileName); // Create an output file stream
 
-    if (outputFile.is_open()) {
-        for (int i = 0; i < maxi; i++) {
-            for (int j = 0; j < maxj; j++) {
+    if (outputFile.is_open())
+    {
+        for (int i = 0; i < maxi; i++)
+        {
+            for (int j = 0; j < maxj; j++)
+            {
                 outputFile << data[i][j] << " "; // Write data to the file
             }
             outputFile << std::endl; // Add a newline at the end of each row
         }
         outputFile.close(); // Close the file
         std::cout << "Matrix has been written to " << fileName << std::endl;
-    } else {
+    }
+    else
+    {
         std::cerr << "Unable to open the file " << fileName << std::endl;
     }
+}
+
+void SiliconOxideMatrix::calculateNumberOfOxygenAtomsByInputPercentage(const int percentage)
+{
+    numberOfOxygenAtoms = generalNumberOfAtoms * (percentage / 100.0);
+    std::cout << "generalNumberOfAtoms: " << generalNumberOfAtoms << std::endl;
+    std::cout << "numberOfOxygenAtoms: " << numberOfOxygenAtoms << std::endl;
+    std::cout << "allPossibleOxygenPlaces: " << allPossibleOxygenPlaces.size() << std::endl;
+}
+
+void SiliconOxideMatrix::putOxygenAtomsOnRdmPlaces()
+{
+    std::vector<std::pair<bool, std::pair<int, int>>> oxygenPlacesBuff = allPossibleOxygenPlaces;
+    int remainOxygenAtomsToPlace = numberOfOxygenAtoms;
+    std::random_device rd;
+    std::mt19937 mercenne_algorith (rd());
+    std::uniform_real_distribution<double> dist(0, oxygenPlacesBuff.size());
+
+    while (0 < remainOxygenAtomsToPlace)
+    {
+        int rnd_index = dist(mercenne_algorith);
+
+        if (oxygenPlacesBuff[rnd_index].first == true)
+        {
+            std::cout << "remainOxygenAtomsToPlace: " << remainOxygenAtomsToPlace << " rnd_index: " << rnd_index << std::endl;
+            data[oxygenPlacesBuff[rnd_index].second.first][oxygenPlacesBuff[rnd_index].second.second] = 2;
+            allOxygenPossitions.push_back(oxygenPlacesBuff[rnd_index].second);
+            oxygenPlacesBuff[rnd_index].first = false;
+            --remainOxygenAtomsToPlace;
+        }
+    }
+}
+
+void SiliconOxideMatrix::getNumber()
+{
+    int count = 0;
+    for (int i = 0; i < maxi; ++i)
+    {
+        for (int j = 0; j < maxj; ++j)
+        {
+            if (data[i][j] == 2)
+            {
+                ++count;
+            }
+        }
+    }
+    std::cout << "count: " << count << std::endl;
 }
 
 // Method to calculate the number of oxygen atoms and handle boundary transitions

@@ -27,7 +27,13 @@ public:
     void initializeArrayO();
     void updateArrayOLoop(std::vector<std::pair<int, int>>& ArrayO);
     void updateDataMatrix(std::vector<std::pair<int, int>>& ArrayO);
-    
+
+    //
+    void calculateNumberOfOxygenAtomsByInputPercentage(const int percentage);
+    void putOxygenAtomsOnRdmPlaces();
+    void getNumber();
+    //
+
     int calculationNumOxigen(int i, int j);
     void printMatrixToFile(const std::string& fileName);
     void printMatrixToImage(const std::string& fileName);
@@ -43,6 +49,14 @@ private:
     std::vector<double> Delta{0.0, 0.5, 0.51, 0.22, 0.0};
     std::vector<std::vector<double>> data;
     std::vector<std::pair<int, int>> ArrayO;
+
+    //
+    std::vector<std::pair<bool, std::pair<int, int>>> allPossibleOxygenPlaces;
+    std::vector<std::pair<int, int>> allOxygenPossitions;
+    int generalNumberOfAtoms;
+    int numberOfOxygenAtoms;
+    //
+
     double penaltyValue;
     double x0 = _X_0;
     double kB = _K_B;
