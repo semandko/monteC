@@ -17,11 +17,14 @@ void configurator (void)
 {
 	int numRows = _NUM_ROWS;
     int numCols = _NUM_COLS;
+    unsigned int oxigenPercent;
 	
 	std::cout << "Matrix has numRows " << numRows << std::endl;
 	std::cout << "Matrix has numCols " << numCols << std::endl;
 	
-    SiliconOxideMatrix matrix;
+	std::cin >> oxigenPercent;
+	
+    SiliconOxideMatrix matrix(oxigenPercent);
 
     matrix.fillMatrix();
     matrix.printMatrixToFile("map.txt");

@@ -19,14 +19,16 @@ class SiliconOxideMatrix {
 	
 public:
 	
-	SiliconOxideMatrix();
+	// Constructor that takes oxigenPercent as an input value
+	SiliconOxideMatrix(unsigned int _oxigenPercent) : oxigenPercent(_oxigenPercent), maxi(_NUM_ROWS), maxj(_NUM_COLS) {
+    	data.resize(maxi, std::vector<double>(maxj, 1)); // Initialize the data vector
+	}
+	
 	~SiliconOxideMatrix();
     
     void fillMatrix();
     double Penalty(int i, int j);
-    void initializeArrayO();
-    void updateArrayOLoop(std::vector<std::pair<int, int>>& ArrayO);
-    void updateDataMatrix(std::vector<std::pair<int, int>>& ArrayO);
+
     
     int calculationNumOxigen(int i, int j);
     void printMatrixToFile(const std::string& fileName);
@@ -35,13 +37,14 @@ public:
     double randomGenerator(unsigned int first_interval, unsigned int last_interval);
     void evolution(void);
     bool isOxygenInCell(int i, int j);
-    bool findingOxigeninCeil(int &index_i, int & index_j);
+    bool findingOxigenInCell(int &index_i, int & index_j);
 	 
 private:
     int maxi;
     int maxj;
-    std::vector<double> Delta{0.0, 0.5, 0.51, 0.22, 0.0};
-    std::vector<std::vector<double>> data;
+    unsigned int oxigenPercent;
+    std::vector<double> Delta{0.0, 0.5, 0.51, 0.22, 0.0}; // penalty energy
+    std::vector<std::vector<double>> data; // data of main array [_NUM_ROWS][_NUM_COLS]
     std::vector<std::pair<int, int>> ArrayO;
     double penaltyValue;
     double x0 = _X_0;
