@@ -32,7 +32,7 @@ void configurator (void)
         matrix.fillMatrix();
         matrix.calculateNumberOfOxygenAtomsByInputPercentage(percentage);
         matrix.putOxygenAtomsOnRdmPlaces();
-        matrix.getNumber();
+        matrix.debug_getNumber();
         matrix.printMatrixToFile("map.txt");
         //matrix.printMatrixToImage("map.ppm");
         //matrix.initializeArrayO();

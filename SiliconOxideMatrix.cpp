@@ -36,8 +36,7 @@ void SiliconOxideMatrix::fillMatrix()
             }
             else if (((1 == i % 2) && (0 == j % 2)) || ((0 == i % 2) && (1 == j % 2))) // Oxygen places
             {
-                data[i][j] = 1.0;
-                allPossibleOxygenPlaces.push_back({true, {i, j}});
+                allPossibleOxygenPlaces.push_back({i, j});
             }
             else
             {
@@ -72,7 +71,7 @@ void SiliconOxideMatrix::printMatrixToFile(const std::string& fileName)
 
 void SiliconOxideMatrix::calculateNumberOfOxygenAtomsByInputPercentage(const int percentage)
 {
-    numberOfOxygenAtoms = generalNumberOfAtoms * (percentage / 100.0);
+    numberOfOxygenAtoms = generalNumberOfAtoms / 2 * (percentage / 100.0);
     std::cout << "generalNumberOfAtoms: " << generalNumberOfAtoms << std::endl;
     std::cout << "numberOfOxygenAtoms: " << numberOfOxygenAtoms << std::endl;
     std::cout << "allPossibleOxygenPlaces: " << allPossibleOxygenPlaces.size() << std::endl;
@@ -80,28 +79,26 @@ void SiliconOxideMatrix::calculateNumberOfOxygenAtomsByInputPercentage(const int
 
 void SiliconOxideMatrix::putOxygenAtomsOnRdmPlaces()
 {
-    std::vector<std::pair<bool, std::pair<int, int>>> oxygenPlacesBuff = allPossibleOxygenPlaces;
-    int remainOxygenAtomsToPlace = numberOfOxygenAtoms;
+    std::vector<std::pair<int, int>> oxygenPlacesBuff = allPossibleOxygenPlaces;
     std::random_device rd;
     std::mt19937 mercenne_algorith (rd());
-    std::uniform_real_distribution<double> dist(0, oxygenPlacesBuff.size());
 
-    while (0 < remainOxygenAtomsToPlace)
+    while (0 < numberOfOxygenAtoms)
     {
+        std::uniform_real_distribution<double> dist(0, oxygenPlacesBuff.size());
         int rnd_index = dist(mercenne_algorith);
 
-        if (oxygenPlacesBuff[rnd_index].first == true)
-        {
-            std::cout << "remainOxygenAtomsToPlace: " << remainOxygenAtomsToPlace << " rnd_index: " << rnd_index << std::endl;
-            data[oxygenPlacesBuff[rnd_index].second.first][oxygenPlacesBuff[rnd_index].second.second] = 2;
-            allOxygenPossitions.push_back(oxygenPlacesBuff[rnd_index].second);
-            oxygenPlacesBuff[rnd_index].first = false;
-            --remainOxygenAtomsToPlace;
-        }
+        std::cout << "remainOxygenAtomsToPlace: " << numberOfOxygenAtoms << " rnd_index: " << rnd_index << " possition: " << oxygenPlacesBuff[rnd_index].first << ", " << oxygenPlacesBuff[rnd_index].second << std::endl;
+        data[oxygenPlacesBuff[rnd_index].first][oxygenPlacesBuff[rnd_index].second] = 2;
+        allOxygenPossitions.push_back({true, oxygenPlacesBuff[rnd_index].first, oxygenPlacesBuff[rnd_index].second});
+        oxygenPlacesBuff.erase(oxygenPlacesBuff.begin() + rnd_index);
+
+        // todo Critical section for multithreading
+        --numberOfOxygenAtoms;
     }
 }
 
-void SiliconOxideMatrix::getNumber()
+void SiliconOxideMatrix::debug_getNumber()
 {
     int count = 0;
     for (int i = 0; i < maxi; ++i)

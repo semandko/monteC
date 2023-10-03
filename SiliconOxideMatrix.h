@@ -15,6 +15,14 @@
 #define _NUM_ROWS 30
 #define _NUM_COLS 30
 
+struct OxygenPosition
+{
+    bool valid;
+    int row;
+    int column;
+};
+
+
 class SiliconOxideMatrix {
 	
 public:
@@ -31,7 +39,7 @@ public:
     //
     void calculateNumberOfOxygenAtomsByInputPercentage(const int percentage);
     void putOxygenAtomsOnRdmPlaces();
-    void getNumber();
+    void debug_getNumber();
     //
 
     int calculationNumOxigen(int i, int j);
@@ -51,8 +59,8 @@ private:
     std::vector<std::pair<int, int>> ArrayO;
 
     //
-    std::vector<std::pair<bool, std::pair<int, int>>> allPossibleOxygenPlaces;
-    std::vector<std::pair<int, int>> allOxygenPossitions;
+    std::vector<std::pair<int, int>> allPossibleOxygenPlaces;
+    std::vector<OxygenPosition> allOxygenPossitions;
     int generalNumberOfAtoms;
     int numberOfOxygenAtoms;
     //
