@@ -8,7 +8,6 @@
 #include <cmath>
 #include <random>
 
-
 #define _CONST_A 1.38e-23
 #define _CONST_B 1.602e-19
 #define _K_B (_CONST_A / _CONST_B)
@@ -28,38 +27,61 @@ typedef struct {
     bool valid;
 } tRomb;
 
+typedef struct {
+	tcell cellTypeO;
+	double penalty;
+} tJumpCell;
+
+
 // variables
-int n = 6;
+int n = 100;
 int numberO;
 
 std::vector<std::vector<tRomb>> grid(n, std::vector<tRomb>(n, { {0, 0}, 1, 1 }));
+std::vector<std::vector<tJumpCell>> jumpFreeSpaces; // 
+
 std::vector<double> Delta{0.0, 0.5, 0.51, 0.22, 0.0}; // penalty energy
+
 double penaltyValue;
+
 double x0 = _X_0;
 double kB = _K_B;
 double kT_eV = _kT_EV(_T);
 int T = _T;
+int jumpingCounts;
 
 // prototypes
 void fillMatrix();
 void fillOxigen();
-int countSurroundingOs(int i, int j);
+int countSurroundingOs(int i, int j, bool isPresent);
+void countSurroundingRomb(int i, int j);
 double randomGenerator(unsigned int first_interval, unsigned int last_interval);
 double penalty(int i, int j);
-bool metropolisCondition(double a, double b);
+bool metropolisCondition(double oldPenaltySum, double newPenaltySum);
+bool rombPenaltyCalculation(tJumpCell& jumpCell);
+bool findOForJumping(tJumpCell& jumpCell);
+bool initJumping(tJumpCell& jumpCell);
+void jumping(tJumpCell& jumpCell);
 void evolution(void);
 
-void testOcupationO(void);
+bool printMatrixToTxt(void);
+void printMatrixToImage(const std::string& fileName);
 
-bool outputFile(void);
+// void printMatrixToImagePNG(const std::string& fileName);
+
 void configurator(void);
+
+// testing block
+void testOcupationO(void);
+// testing block
+
 
 // code section *************************************************
 void fillMatrix() {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             if ((i % 2 == 1) && (j % 2 == 1)) {
-                grid[i][j].value = 0.0; // Set value to 1 for [even][even] cells
+                grid[i][j].value = 0.0; // Set value to 1 for [odd][odd] cells
             }
         }
     }
@@ -81,25 +103,90 @@ void fillOxigen() {
 }
 
 int countSurroundingOs(int i, int j) {
-    int count = 0; // number of cells type O
+    int countPresent = 0;
 
-    if (i % 2 == 1 && j % 2 == 1) { // [even][even] cell of type K
+    if (i % 2 == 1 && j % 2 == 1) { // [odd][odd] cell of type K
         int di[] = {-1, 1, 0, 0}; // vertical
-        int dj[] = {0, 0, -1, 1}; // horisontal
+        int dj[] = {0, 0, -1, 1}; // horizontal
 
         for (int dir = 0; dir < 4; dir++) {
-            int ni = (i + di[dir]) % n;
-            int nj = (j + dj[dir]) % n;
+            int ni = (i + di[dir] + n) % n; // type O index
+            int nj = (j + dj[dir] + n) % n; // type O index
 
+        	// is type O presented
             if (grid[ni][nj].value == 8) {
-                count++;
+                countPresent++;
             }
         }
-    } else {
-    	std::cout << "not valid ";
-	}
+    }
+	else {
+        std::cout << "not valid " << std::endl;
+    }
 
-    return count;
+    return countPresent;
+}
+
+void countSurroundingRomb(int i, int j) {
+    if (i % 2 == 1 && j % 2 == 1) { // [odd][odd] cell of type K
+        int di[] = {-1, 1, 0, 0}; // vertical
+        int dj[] = {0, 0, -1, 1}; // horizontal
+
+        for (int dir = 0; dir < 4; dir++) {
+            int ni = (i + di[dir] + n) % n; // type O index
+            int nj = (j + dj[dir] + n) % n; // type O index
+
+            // Check if it's a free space
+            if (grid[ni][nj].value != 8) {
+            	
+            	// structure tJumpCell
+                tJumpCell jumpCell;
+                jumpCell.cellTypeO.i = ni;
+                jumpCell.cellTypeO.j = nj;
+                jumpCell.penalty = 0.0;
+                
+                // vector of structure tJumpCell
+                std::vector<tJumpCell> jumpCellVector; // Create a vector to hold the jumpCell
+                jumpCellVector.push_back(jumpCell);
+                // vector of vectors of structure tJumpCell
+                jumpFreeSpaces.push_back(jumpCellVector); // Push the vector containing jumpCell
+            }
+        }
+    } 
+	else {
+        std::cout << "not valid " << std::endl;
+    }
+}
+
+bool rombPenaltyCalculation(tJumpCell& jumpCell) {
+    bool ret = false;
+    int i = jumpCell.cellTypeO.i; // for type O
+    int j = jumpCell.cellTypeO.j; // for type O
+	int i_a, j_a;
+	int i_b, j_b;
+	
+    if (i % 2 == 1) { // Index for type O
+        // Horizontal case for cells type K
+		i_a = i; j_a = (j - 1 + n) % n; // left
+		i_b = i; j_b = (j + 1) % n; // right
+    }
+	else {
+        // Vertical case for cells type K 
+        i_a = (i - 1 + n) % n; 	j_a = j; // up
+		i_b = (i + 1) % n; 		j_b = j; // down
+    }
+    
+    countSurroundingRomb(i_a, j_a); // is free other 3 spaces surrounding type K cell a within the romb
+	countSurroundingRomb(i_b, j_b);  // is free other 3 spaces surrounding type K cell b within the romb
+		
+    if (!jumpFreeSpaces.empty()) {
+        jumpCell.penalty = penalty(i_a, j_a) + penalty(i_b, j_b); // Calculate the penalty for the new cell
+        ret = true;
+    } 
+	else {
+        ret = false; // No free space to jump
+    }
+        
+    return ret;
 }
 
 double randomGenerator(unsigned int first_interval, unsigned int last_interval) {
@@ -109,48 +196,137 @@ double randomGenerator(unsigned int first_interval, unsigned int last_interval) 
     return dist(gen);
 }
 
-double pPenalty(int i, int j) {
-    return Delta[countSurroundingOs(i, j)];
+double penalty(int i, int j) {
+	int count = countSurroundingOs(i, j); // true to calculate O type is presented
+	double penalty = 0;
+	
+	if (i % 2 == 1 && j % 2 == 1) { // [odd][odd] cell of type K
+		penalty = Delta[count];
+		// grid[i][j].value = penalty;
+	}
+    return penalty;
 }
 
-bool metropolisCondition(double a, double b) {
+bool metropolisCondition(double oldPenaltySum, double newPenaltySum) {
+	
+	bool ret = false;
 	
 	double randomValue = randomGenerator(0, 1); // Generate a random number in the range [0, 1]
-	double metropolisValue = exp(-((b - a) / kT_eV)); // Calculate the Metropolis condition value
-
-    // Compare the random value with the Metropolis value
+		
+	double metropolisValue = exp(-((newPenaltySum - oldPenaltySum) / kT_eV)); // Calculate the Metropolis condition value
+	
+    // Compare the random value with the Metropolis criteria
     if (randomValue > metropolisValue) {
-        return false; // Reject the jump
+        ret = false; // Reject the jump
     } else {
-        return true; // Accept the jump
+        ret =  true; // Accept the jump
+    }
+    return ret;
+}
+	
+// finding free place to jump cell type O, if possible calculate penalty energy and fix current [i][j]
+bool findOForJumping(tJumpCell& jumpCell) {
+    bool ret = false;
+
+    while (true) {
+		int k = rand() % n;
+        int m = rand() % n;
+	
+        // Cells type O [even][odd] or [odd][even]
+        if (((k % 2 == 0) && (m % 2 == 1)) || ((k % 2 == 1) && (m % 2 == 0))) {
+
+            if (grid[k][m].value == 8) {
+				jumpCell.cellTypeO.i = k;
+                jumpCell.cellTypeO.j = m;
+                ret = rombPenaltyCalculation(jumpCell);
+				
+				if (ret == true) {
+					break;
+				}     
+            }
+        }
+    }
+    return ret;
+}
+
+bool initJumping(tJumpCell& jumpCell) {
+	bool ret = false;
+	
+    if (true == findOForJumping(jumpCell)) {	
+		ret = true;   
+    }
+	else {
+		ret = false;
+    }
+    return ret;
+}
+
+void jumping(tJumpCell& jumpCell) {
+    bool isJump = false;
+
+	// Check if jumpFreeSpaces is not empty
+	if (!jumpFreeSpaces.empty()) {
+		
+	    int randomIndex = static_cast<int>(randomGenerator(0, jumpFreeSpaces.size() - 1)); // Generate a random index within the range of jumpFreeSpaces
+		
+	    // Get the corresponding new cell to jump
+	    tJumpCell jumpNewCell;
+	    jumpNewCell.cellTypeO.i = jumpFreeSpaces[randomIndex][0].cellTypeO.i;
+	    jumpNewCell.cellTypeO.j = jumpFreeSpaces[randomIndex][0].cellTypeO.j;
+	    jumpNewCell.penalty = 0.0;
+
+        rombPenaltyCalculation(jumpNewCell); // Calculate the penalty for the new cell
+
+        if (jumpNewCell.penalty < jumpCell.penalty) {
+            isJump = true;
+        }
+		else {
+            isJump = metropolisCondition(jumpCell.penalty, jumpNewCell.penalty); // Implement metropolis condition and assign the result to isJump
+        }
+
+        if (isJump) {
+			// Rewrite 8 to the new position in the grid vector
+			grid[jumpNewCell.cellTypeO.i][jumpNewCell.cellTypeO.j].value = 8;
+			grid[jumpCell.cellTypeO.i][jumpCell.cellTypeO.j].value = 1;
+			jumpingCounts++;
+        }
+
+        // Clear fields of jumpCell
+        jumpCell.cellTypeO.i = -1;
+        jumpCell.cellTypeO.j = -1;
+        jumpCell.penalty = 0.0;
+
+        // Clear all elements of jumpFreeSpaces
+        jumpFreeSpaces.clear();
     }
 }
 
 void evolution(void) {
-	
-}
 
-// testing block start
-void testOcupationO(void) {
-    for (int k = 0; k < 5; ++k) {
-        int i = rand() % n;
-        int j = rand() % n;
-
-        std::cout << k << ": [" << i << "][" << j << "] = " << countSurroundingOs(i, j) << " cells" << std::endl;
+    // Double iteration 1000000000; // Working
+    double iteration = 100000; // Testing
+    
+    while (iteration--) {
+    	
+    	tJumpCell jumpCell; // current cell
+    	
+    	if (initJumping(jumpCell)) {
+    		jumping(jumpCell); // checking local cell inside
+		}
     }
+
+    std::cout << "Evolution is done" << std::endl;
 }
-// testing block stop
 
-bool outputFile(void) {
-    std::ofstream outputFile("grid.txt");
+//***************************************************************************
+bool printMatrixToTxt(const std::string& fileName) {
+    std::ofstream outputFile(fileName);
 
-    // Check if the file was successfully opened
     if (!outputFile.is_open()) {
-        std::cerr << "Unable to open output file!" << std::endl;
-        return 1; // Return an error code
+        std::cerr << "Unable to open output file: " << fileName << std::endl;
+        return false;
     }
 
-    // Write the entire grid matrix to the "grid.txt" file
     for (const std::vector<tRomb>& row : grid) {
         for (const tRomb& cell : row) {
             outputFile << cell.value << ' ';
@@ -159,7 +335,7 @@ bool outputFile(void) {
     }
 
     outputFile.close();
-    return 0;
+    return true;
 }
 
 void printMatrixToImage(const std::string& fileName) {
@@ -174,14 +350,17 @@ void printMatrixToImage(const std::string& fileName) {
         colorMap[3] = "0 255 0 ";      // Green
         colorMap[4] = "255 255 0 ";    // Yellow
 
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - 1; j++) {
-                if ((i % 2 == 1) && (j % 2 == 1)) { // [even][even] position calculation
-                    unsigned int value = countSurroundingOs(i, j); // Number of oxygen atoms calculation surround [even][even] cell
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if ((i % 2 == 1) && (j % 2 == 1)) { // [odd][odd] position calculation
+                    unsigned int value = countSurroundingOs(i, j); // Number of oxygen atoms calculation surround [odd][odd] cell
                     // Use the color map to set the color based on the value
                     if (colorMap.find(value) != colorMap.end()) {
                         outputFile << colorMap[value];
                     }
+                } else {
+                    // Set white color for cells that do not meet the condition
+                    outputFile << "255 255 255 ";
                 }
             }
             outputFile << "\n";
@@ -195,41 +374,71 @@ void printMatrixToImage(const std::string& fileName) {
 
 void configurator(void) {
 
-    std::cout << "Number of all elements = " << n << std::endl; // Output the value of matrix dimension n
+    std::cout << "Number of all elements = " << n*n << std::endl;
 
-    grid.resize(n, std::vector<tRomb>(n, { {0, 0}, 1, 1 })); // Resize the grid matrix to dimensions n x n and initialize it with 1s
+    grid.resize(n, std::vector<tRomb>(n, { {0, 0}, 1, 1 }));
 
     fillMatrix();
 
     int percentO; // Prompt the user to input the percentage of Oxygen (type O cell) in the matrix
     std::cout << "Input percentage of Oxygen: ";
     std::cin >> percentO;
-
+	
+	std::cout << "Number of Oxygen cells = " << (n * n / 2) << std::endl;
     numberO = (n * n / 2) * percentO / 100; // Calculate the number of O cells
     std::cout << "Number of Oxygen cells = " << numberO << std::endl;
-
-    auto start = std::chrono::high_resolution_clock::now(); // Record the start time for measuring the duration of the fillOxigen function
-
+    
     fillOxigen(); // Fill the grid with O cells
-
-    auto stop = std::chrono::high_resolution_clock::now(); // Record the stop time to calculate the duration of the fillOxigen function
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-
-    std::cout << "Time taken by fillOxigen = " << duration.count() << " microseconds" << std::endl;
-
 }
 
 //************************************************************************************************
 int main(int argc, char** argv) {
 
     configurator();
-    testOcupationO();
+    
+    // testing block
+    //testOcupationO();
+    // testing block
 
-    outputFile();
-    printMatrixToImage("map.ppm");
+    if (!printMatrixToTxt("init.txt")) {
+        std::cerr << "Failed to create 'init.txt'." << std::endl;
+    }
+    printMatrixToImage("init_map.ppm");    
+    
+    auto start = std::chrono::high_resolution_clock::now(); // Record the start time for measuring the duration of the fillOxigen function
+    
+	evolution();
+	
+    auto stop = std::chrono::high_resolution_clock::now(); // Record the stop time to calculate the duration of the fillOxigen function
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 
-    std::cin.get(); // Wait for user input before exiting the program
+    std::cout << "Time taken by fillOxigen = " << duration.count() << " microseconds" << std::endl;
+    
+    std::cout << "jumping counts = " << jumpingCounts << std::endl;
+    
+    // Print the grid matrix after evolution to a new file
+    if (!printMatrixToTxt("evolution.txt")) {
+        std::cerr << "Failed to create 'evolution.txt'." << std::endl;
+    }
+    printMatrixToImage("evolution_map.ppm");
+		
+    std::cin.get();
 
-    return 0; // Return a success code
+    return 0;
 }
+
+
+
+// testing block start
+void testOcupationO(void) {
+	std::cout << "testing start" << std::endl;
+    for (int k = 0; k < 5; ++k) {
+		int i = static_cast<int>(randomGenerator(0, n)) % n;
+        int j = static_cast<int>(randomGenerator(0, n)) % n;
+
+        std::cout << k << ": [" << i << "][" << j << "] = " << countSurroundingOs(i, j) << " cells" << std::endl;
+    }
+    std::cout << "testing start" << std::endl;
+}
+// testing block stop
 
