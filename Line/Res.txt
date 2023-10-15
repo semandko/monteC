@@ -1,0 +1,12 @@
+Line results:
+	Please enter the integer Oxygen percentage (from 0 to 100): 25
+	generalNumberOfAtoms: 250000
+	numberOfOxygenAtoms: 31250
+	allPossibleOxygenPlaces: 125000
+	Matrix has been written to map_old.txt
+	Matrix has been written to map_evo.txt
+	Evolution took 13 seconds
+
+
+Paralel results:
+	??????

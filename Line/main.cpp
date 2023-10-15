@@ -1,11 +1,13 @@
 #include <iostream>
+#include <chrono>
 #include "SiliconOxideMatrix.h"
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
 void configurator (void);
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
 	
 	configurator();
 	 
@@ -15,12 +17,7 @@ int main(int argc, char** argv) {
 
 void configurator (void)
 {
-	int numRows = _NUM_ROWS;
-    int numCols = _NUM_COLS;
-    int percentage = 0;;
-	
-	std::cout << "Matrix has numRows " << numRows << std::endl;
-	std::cout << "Matrix has numCols " << numCols << std::endl;
+    int percentage = 0;
 
     std::cout << "Please enter the integer Oxygen percentage (from 0 to 100): ";
     std::cin >> percentage;
@@ -32,8 +29,22 @@ void configurator (void)
         matrix.fillMatrix();
         matrix.calculateNumberOfOxygenAtomsByInputPercentage(percentage);
         matrix.putOxygenAtomsOnRdmPlaces();
+        matrix.printMatrixToFile("map_old.txt");
+
+        auto start = std::chrono::high_resolution_clock::now();
+        matrix.evolution();
+        auto stop = std::chrono::high_resolution_clock::now();
+
+        matrix.printMatrixToFile("map_evo.txt");
+
+	
+        auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+
+        std::cout << "Evolution took " << duration.count() << " seconds" << std::endl;
         matrix.debug_getNumber();
-        matrix.printMatrixToFile("map.txt");
+
+        //matrix.debug_getNumber();
+        //matrix.printMatrixToFile("map.txt");
         //matrix.printMatrixToImage("map.ppm");
         //matrix.initializeArrayO();
     }
