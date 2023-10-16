@@ -16,12 +16,7 @@
 #define _NUM_ROWS 10
 #define _NUM_COLS 10
 
-struct OxygenPos
-{
-    int row;
-    int column;
-    bool valid;
-};
+
 
 struct MatrixPossition
 {
@@ -40,6 +35,9 @@ public:
     
     void fillMatrix();
     double calculatePenaltyForKremniy(int i, int j);
+    // void initializeArrayO();
+    // void updateArrayOLoop(std::vector<std::pair<int, int>>& ArrayO);
+    // void updateDataMatrix(std::vector<std::pair<int, int>>& ArrayO);
 
     //
     void calculateNumberOfOxygenAtomsByInputPercentage(const int percentage);
@@ -47,26 +45,28 @@ public:
     double getRdmDoubleNumber(int start, int notIncludedEnd);
     void putOxygenAtomsOnRdmPlaces();
     void evolution();
-    bool checkingCellOccupationAndJumping(int row, int column, bool method);
-    std::vector<std::pair<int, int>> getJumpPossitionsAndChangeValidationToNV(int row, int column, bool method);
-    void changeValidationToV(int row, int column, bool method);
+    bool checkingHorizontalCellOccupationAndJumping(int row, int column);
+    bool checkingVerticalCellOccupationAndJumping(int row, int column);
     void debug_getNumber();
-    int debug_getNumber_test();
     //
 
     int calculationNumberOfOxigens(int i, int j);
     void printMatrixToFile(const std::string& fileName);
     // void printMatrixToImage(const std::string& fileName);
     bool metropolisCondition(double a, double b);
+    double randomGenerator(unsigned int first_interval, unsigned int last_interval);
+    // bool isOxygenInCell(int i, int j);
+    // bool findingOxigeninCeil(int &index_i, int & index_j);
 	 
 private:
     int N;
     std::vector<double> Delta{0.0, 0.5, 0.51, 0.22, 0.0};
     std::vector<std::vector<MatrixPossition>> data;
+    std::vector<std::pair<int, int>> ArrayO;
 
     //
-    std::vector<OxygenPos> allPossibleOxygenPlaces;
-    std::vector<OxygenPos> allOxygenPossitions;
+    std::vector<std::pair<int, int>> allPossibleOxygenPlaces;
+    std::vector<std::pair<int, int>> allOxygenPossitions;
 
     std::vector<std::pair<int, int>> horizontalKremniyPlacesOfset;
     std::vector<std::pair<int, int>> verticalKremniyPlacesOfset;
@@ -77,8 +77,7 @@ private:
     int numberOfOxygenAtoms;
     long long evo_iterations;
 
-    std::mutex iterations_m;
-    std::mutex valid_m;
+    std::mutex data_m;
     //
 
     double penaltyValue;
