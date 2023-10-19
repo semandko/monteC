@@ -34,7 +34,8 @@ typedef struct {
 
 
 // variables
-int n = 100;
+int n = 500;
+double iteration = 1000; // Testing
 int numberO;
 
 std::vector<std::vector<tRomb>> grid(n, std::vector<tRomb>(n, { {0, 0}, 1, 1 }));
@@ -119,10 +120,10 @@ int countSurroundingOs(int i, int j) {
             }
         }
     }
-	else {
+	else
+	{
         std::cout << "not valid " << std::endl;
     }
-
     return countPresent;
 }
 
@@ -152,7 +153,8 @@ void countSurroundingRomb(int i, int j) {
             }
         }
     } 
-	else {
+	else
+	{
         std::cout << "not valid " << std::endl;
     }
 }
@@ -182,7 +184,8 @@ bool rombPenaltyCalculation(tJumpCell& jumpCell) {
         jumpCell.penalty = penalty(i_a, j_a) + penalty(i_b, j_b); // Calculate the penalty for the new cell
         ret = true;
     } 
-	else {
+	else
+	{
         ret = false; // No free space to jump
     }
         
@@ -202,7 +205,6 @@ double penalty(int i, int j) {
 	
 	if (i % 2 == 1 && j % 2 == 1) { // [odd][odd] cell of type K
 		penalty = Delta[count];
-		// grid[i][j].value = penalty;
 	}
     return penalty;
 }
@@ -218,7 +220,8 @@ bool metropolisCondition(double oldPenaltySum, double newPenaltySum) {
     // Compare the random value with the Metropolis criteria
     if (randomValue > metropolisValue) {
         ret = false; // Reject the jump
-    } else {
+    } else
+	{
         ret =  true; // Accept the jump
     }
     return ret;
@@ -255,7 +258,8 @@ bool initJumping(tJumpCell& jumpCell) {
     if (true == findOForJumping(jumpCell)) {	
 		ret = true;   
     }
-	else {
+	else
+	{
 		ret = false;
     }
     return ret;
@@ -302,9 +306,6 @@ void jumping(tJumpCell& jumpCell) {
 }
 
 void evolution(void) {
-
-    // Double iteration 1000000000; // Working
-    double iteration = 100000; // Testing
     
     while (iteration--) {
     	
@@ -395,10 +396,6 @@ void configurator(void) {
 int main(int argc, char** argv) {
 
     configurator();
-    
-    // testing block
-    //testOcupationO();
-    // testing block
 
     if (!printMatrixToTxt("init.txt")) {
         std::cerr << "Failed to create 'init.txt'." << std::endl;
