@@ -11,7 +11,6 @@ SiliconOxideMatrix::SiliconOxideMatrix()
     N = 500;
     generalNumberOfAtoms = N * N;
     numberOfOxygenAtoms = 0; // zero by default
-    evo_iterations = 10000000;
 	data.resize(N, std::vector<MatrixPossition>(N, {1, true})); // Initialize the data vector
 
     horizontalKremniyPlacesOfset =  {{0, -1}, {0, -3}, {-2, -1}, {-2, 1}, {0, 1}, {0, 3}, {2, 1}, {2, -1}};
@@ -81,7 +80,6 @@ void SiliconOxideMatrix::calculateNumberOfOxygenAtomsByInputPercentage(const int
     std::cout << "generalNumberOfAtoms: " << generalNumberOfAtoms << std::endl;
     std::cout << "numberOfOxygenAtoms: " << numberOfOxygenAtoms << std::endl;
     std::cout << "allPossibleOxygenPlaces: " << allPossibleOxygenPlaces.size() << std::endl;
-    std::cout << "Iterations number: " << evo_iterations << std::endl;
 }
 
 int SiliconOxideMatrix::getRdmIntNumber(int start, int notIncluydedEnd)
@@ -130,10 +128,11 @@ bool SiliconOxideMatrix::checkingHorizontalCellOccupationAndJumping(int row, int
         int indexI = (row + OxygenPlaceOfset.first + N) % N;
         int indexJ = (column + OxygenPlaceOfset.second + N) % N;
 
-        if (!data[indexI][indexJ].valid)
-        {
-            return false;
-        }
+        // no need at the moment
+        // if (!data[indexI][indexJ].valid)
+        // {
+        //     return false;
+        // }
 
         if (data[indexI][indexJ].value == 1.0)
         {
@@ -155,10 +154,11 @@ bool SiliconOxideMatrix::checkingVerticalCellOccupationAndJumping(int row, int c
         int indexI = (row + OxygenPlaceOfset.first + N) % N;
         int indexJ = (column + OxygenPlaceOfset.second + N) % N;
 
-        if (!data[indexI][indexJ].valid)
-        {
-            return false;
-        }
+        // no need at the moment
+        // if (!data[indexI][indexJ].valid)
+        // {
+        //     return false;
+        // }
 
         if (data[indexI][indexJ].value == 1.0)
         {
@@ -170,9 +170,10 @@ bool SiliconOxideMatrix::checkingVerticalCellOccupationAndJumping(int row, int c
     return placesavailability;
 }
 
-void SiliconOxideMatrix::evolution()
+void SiliconOxideMatrix::evolutionFindOxygen()
 {
-    while (evo_iterations > 0)
+    unsigned long long n = 10000000;
+    while (n--)
     {
         // std::cout << "Remain number of iteration: " << n << std::endl;
         int oxygenRndPossitionIndex = getRdmIntNumber(0, allOxygenPossitions.size());
@@ -182,9 +183,8 @@ void SiliconOxideMatrix::evolution()
         // std::cout << "RND oxygen row: " << oxygenRndRow << ", column: " << oxygenRndColumn << std::endl;
 
         // no need at the moment
-        if (data[oxygenRndRow][oxygenRndColumn].valid)
-        {
-            data[oxygenRndRow][oxygenRndColumn].valid = false;
+        // if (data[oxygenRndRow][oxygenRndColumn].valid)
+        // {
             if (oxygenRndRow % 2 == 1)
             {
                 // std::cout << "Horizontal type" << std::endl;
@@ -209,7 +209,6 @@ void SiliconOxideMatrix::evolution()
                         {
                             possitionsToJump.push_back({buffRow, buffColumn});
                         }
-                        data[buffRow][buffColumn].valid = false;
                     }
 
                     toJumpPossitionIndex = getRdmIntNumber(0, possitionsToJump.size());
@@ -231,12 +230,10 @@ void SiliconOxideMatrix::evolution()
 
                     if (nA < A)
                     {
-                        data_m.lock();
                         allOxygenPossitions[oxygenRndPossitionIndex].first = toJumpRow;
                         allOxygenPossitions[oxygenRndPossitionIndex].second = toJumpColumn;
                         data[toJumpRow][toJumpColumn].value = 2.0;
                         data[oxygenRndRow][oxygenRndColumn].value = 1.0;
-                        data_m.unlock();
                         // std::cout << "JUMPED!" << std::endl;
                     }
                     else
@@ -245,12 +242,10 @@ void SiliconOxideMatrix::evolution()
 
                         if (metropolisCondition(A, nA))
                         {
-                            data_m.lock();
                             allOxygenPossitions[oxygenRndPossitionIndex].first = toJumpRow;
                             allOxygenPossitions[oxygenRndPossitionIndex].second = toJumpColumn;
                             data[toJumpRow][toJumpColumn].value = 2.0;
                             data[oxygenRndRow][oxygenRndColumn].value = 1.0;
-                            data_m.unlock();
                             // std::cout << "JUMPED!" << std::endl;
                         }
                         else
@@ -259,12 +254,11 @@ void SiliconOxideMatrix::evolution()
                         }
                     }
 
-                    for (const auto ofsetValue : horizontalOxygenPlacesOfset)
-                    {
-                        int buffRow = (oxygenRndRow + ofsetValue.first + N) % N;
-                        int buffColumn = (oxygenRndColumn + ofsetValue.second + N) % N;
-                        data[buffRow][buffColumn].valid = true;
-                    }
+                    // no need at the moment
+                    // for (const auto ofsetValue : horizontalOxygenPlacesOfset)
+                    // {
+                    //     data[oxygenRndRow + ofsetValue.first][oxygenRndColumn + ofsetValue.second].valid = true;
+                    // }
                 }
                 else
                 {
@@ -295,7 +289,6 @@ void SiliconOxideMatrix::evolution()
                         {
                             possitionsToJump.push_back({buffRow, buffColumn});
                         }
-                        data[buffRow][buffColumn].valid = false;
                     }
 
                     toJumpPossitionIndex = getRdmIntNumber(0, possitionsToJump.size());
@@ -317,12 +310,10 @@ void SiliconOxideMatrix::evolution()
 
                     if (nA < A)
                     {
-                        data_m.lock();
                         allOxygenPossitions[oxygenRndPossitionIndex].first = toJumpRow;
                         allOxygenPossitions[oxygenRndPossitionIndex].second = toJumpColumn;
                         data[toJumpRow][toJumpColumn].value = 2.0;
                         data[oxygenRndRow][oxygenRndColumn].value = 1.0;
-                        data_m.unlock();
                         // std::cout << "JUMPED!" << std::endl;
                     }
                     else
@@ -330,12 +321,10 @@ void SiliconOxideMatrix::evolution()
                         // std::cout << "nA >= A, trying metropolis condition" << std::endl;
                         if (metropolisCondition(A, nA))
                         {
-                            data_m.lock();
                             allOxygenPossitions[oxygenRndPossitionIndex].first = toJumpRow;
                             allOxygenPossitions[oxygenRndPossitionIndex].second = toJumpColumn;
                             data[toJumpRow][toJumpColumn].value = 2.0;
                             data[oxygenRndRow][oxygenRndColumn].value = 1.0;
-                            data_m.unlock();
                             // std::cout << "JUMPED!" << std::endl;
                         }
                         else
@@ -344,28 +333,23 @@ void SiliconOxideMatrix::evolution()
                         }
                     }
 
-                    for (const auto ofsetValue : verticalOxygenPlacesOfset)
-                    {
-                        int buffRow = (oxygenRndRow + ofsetValue.first + N) % N;
-                        int buffColumn = (oxygenRndColumn + ofsetValue.second + N) % N;
-                        data[buffRow][buffColumn].valid = true;
-                    }
+                    // no need at the moment
+                    // for (const auto ofsetValue : horizontalOxygenPlacesOfset)
+                    // {
+                    //     data[oxygenRndRow + ofsetValue.first][oxygenRndColumn + ofsetValue.second].valid = true;
+                    // }
                 }
                 else
                 {
                     // std::cout << "No places to jump" << std::endl;
                 }
             }
-
-            data[oxygenRndRow][oxygenRndColumn].valid = true;
-        }
-        else
-        {
-            // std::cout << "Possition is not valid";
-        }
+        // }
+        // else
+        // {
+        //     // std::cout << "Possition is not valid";
+        // }
         // std::cout << "End iteration" << std::endl <<std::endl;
-        std::lock_guard<std::mutex> lock(std::mutex);
-        --evo_iterations;
     }
 }
 
@@ -484,7 +468,7 @@ double SiliconOxideMatrix::calculatePenaltyForKremniy(int i, int j)
 // 	return true;
 // }
 
-// void SiliconOxideMatrix::evolution(void) {
+// void SiliconOxideMatrix::evolutionFindOxygen(void) {
 //     unsigned int iteration = 1000000000;
 
 //     while (iteration--) {

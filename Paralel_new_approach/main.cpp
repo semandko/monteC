@@ -31,17 +31,31 @@ void configurator (void)
         matrix.calculateNumberOfOxygenAtomsByInputPercentage(percentage);
         matrix.putOxygenAtomsOnRdmPlaces();
         matrix.printMatrixToFile("map_old.txt");
+        matrix.printMatrixToImage("map_old.ppm");
 
-        std::vector<std::thread> threads(8);
+        std::vector<std::thread> findThreads(3);
+        std::vector<std::thread> jumpingThreads(5);
 
-        for (auto& th : threads)
+        // initialize threads
+        for (auto& th : findThreads)
         {
-            th = std::thread(&SiliconOxideMatrix::evolution, &matrix);
+            th = std::thread(&SiliconOxideMatrix::evolutionFindOxygen, &matrix);
+        }
+
+        for (auto& th : jumpingThreads)
+        {
+            th = std::thread(&SiliconOxideMatrix::evolutionCheckJuping, &matrix);
         }
 
         auto start = std::chrono::high_resolution_clock::now();
 
-        for (auto& th : threads)
+        // join threads
+        for (auto& th : findThreads)
+        {
+            th.join();
+        }
+
+        for (auto& th : jumpingThreads)
         {
             th.join();
         }
@@ -56,9 +70,7 @@ void configurator (void)
         std::cout << "Evolution took " << duration.count() << " seconds" << std::endl;
         matrix.debug_getNumber();
 
-        //matrix.printMatrixToFile("map.txt");
-        //matrix.printMatrixToImage("map.ppm");
-        //matrix.initializeArrayO();
+        matrix.printMatrixToImage("map_ev.ppm");
     }
     else
     {

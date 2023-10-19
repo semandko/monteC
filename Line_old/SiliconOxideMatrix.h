@@ -43,7 +43,7 @@ public:
     int getRdmIntNumber(int start, int notIncludedEnd);
     double getRdmDoubleNumber(int start, int notIncludedEnd);
     void putOxygenAtomsOnRdmPlaces();
-    void evolution();
+    void evolutionFindOxygen();
     bool checkingHorizontalCellOccupationAndJumping(int row, int column);
     bool checkingVerticalCellOccupationAndJumping(int row, int column);
     void debug_getNumber();

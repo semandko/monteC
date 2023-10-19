@@ -11,7 +11,10 @@ SiliconOxideMatrix::SiliconOxideMatrix()
     N = 500;
     generalNumberOfAtoms = N * N;
     numberOfOxygenAtoms = 0; // zero by default
-    evo_iterations = 10000000;
+    evo_iterations = 1000000000;
+    jump_count = 0;
+    func_count = 0;
+    stop_flag = false;
 	data.resize(N, std::vector<MatrixPossition>(N, {1, true})); // Initialize the data vector
 
     // horizontalKremniyPlacesOfset =  {{0, -1}, {0, -3}, {-2, -1}, {-2, 1}, {0, 1}, {0, 3}, {2, 1}, {2, -1}};
@@ -38,10 +41,11 @@ void SiliconOxideMatrix::fillMatrix()
             }
             else if ((0 == i % 2) && (0 == j % 2)) // N/A places
             {
-                data[i][j].value = 9.0;
+                // data[i][j].value = 9.0;
             }
             else if (((1 == i % 2) && (0 == j % 2)) || ((0 == i % 2) && (1 == j % 2))) // Oxygen places
             {
+                // data[i][j].value = 8.0;
                 allPossibleOxygenPlaces.push_back({i, j, true});
             }
             else
@@ -155,7 +159,7 @@ bool SiliconOxideMatrix::checkingCellOccupationAndJumping(int row, int column, b
     return placesavailability;
 }
 
-std::vector<std::pair<int, int>> SiliconOxideMatrix::getJumpPossitionsAndChangeValidationToNV(int row, int column, bool method)
+std::vector<std::pair<int, int>> SiliconOxideMatrix::getJumpPossitions(int row, int column, bool method)
 {
     std::vector<std::pair<int, int>> OxygenPlacesOfset;
     std::vector<std::pair<int, int>> possitionsToJump;
@@ -169,7 +173,6 @@ std::vector<std::pair<int, int>> SiliconOxideMatrix::getJumpPossitionsAndChangeV
         OxygenPlacesOfset = verticalOxygenPlacesOfset;
     }
 
-    data[row][column].valid = false;
     for (const auto placeOfset : OxygenPlacesOfset)
     {
         int buffRow = (row + placeOfset.first + N) % N;
@@ -178,13 +181,12 @@ std::vector<std::pair<int, int>> SiliconOxideMatrix::getJumpPossitionsAndChangeV
         {
             possitionsToJump.push_back({buffRow, buffColumn});
         }
-        data[buffRow][buffColumn].valid = false;
     }
 
     return possitionsToJump;
 }
 
-void SiliconOxideMatrix::changeValidationToV(int row, int column, bool method)
+void SiliconOxideMatrix::changeMatrixValidation(int row, int column, bool method, bool validation)
 {
     std::vector<std::pair<int, int>> OxygenPlacesOfset;
 
@@ -197,155 +199,154 @@ void SiliconOxideMatrix::changeValidationToV(int row, int column, bool method)
         OxygenPlacesOfset = verticalOxygenPlacesOfset;
     }
 
-    data[row][column].valid = true;
+    data[row][column].valid = validation;
     for (const auto ofsetValue : OxygenPlacesOfset)
     {
         int buffRow = (row + ofsetValue.first + N) % N;
         int buffColumn = (column + ofsetValue.second + N) % N;
-        data[buffRow][buffColumn].valid = true;
+        data[buffRow][buffColumn].valid = validation;
     }
 }
 
-void SiliconOxideMatrix::evolution()
+void SiliconOxideMatrix::evolutionFindOxygen()
 {
     while (evo_iterations > 0)
-    {   
-        // std::cout << "Remain number of iteration: " << evo_iterations << std::endl;
+    {
         int oxygenRndPossitionIndex = getRdmIntNumber(0, allOxygenPossitions.size());
+        int oxygenRndRow = allOxygenPossitions[oxygenRndPossitionIndex].row;
+        int oxygenRndColumn = allOxygenPossitions[oxygenRndPossitionIndex].column;
+        bool method = (oxygenRndRow % 2 == 1); // horizontal == 1, vertical == 0
 
         valid_m.lock();
-        if (allOxygenPossitions[oxygenRndPossitionIndex].valid)
+        if (data[oxygenRndRow][oxygenRndColumn].valid)
         {
-            allOxygenPossitions[oxygenRndPossitionIndex].valid = false;
-            valid_m.unlock();
-
-            int oxygenRndRow = allOxygenPossitions[oxygenRndPossitionIndex].row;
-            int oxygenRndColumn = allOxygenPossitions[oxygenRndPossitionIndex].column;
-            bool method = (oxygenRndRow % 2 == 1); // horizontal == 1, vertical == 0
-
             // std::cout << "RND oxygen row: " << oxygenRndRow << ", column: " << oxygenRndColumn << std::endl;
 
-            valid_m.lock();
             if (checkingCellOccupationAndJumping(oxygenRndRow, oxygenRndColumn, method))
             {
+                changeMatrixValidation(oxygenRndRow, oxygenRndColumn, method, false);
                 valid_m.unlock();
 
-                // std::cout << "Found available places to jump" << std::endl;
+                queue_m.lock();
+                threadChoosenOxygenQueue.push(oxygenRndPossitionIndex);
+                queue_m.unlock();
+                --evo_iterations;
+            }
+            else
+            {
+                valid_m.unlock();
+            }
 
-                std::vector<std::pair<int, int>> possitionsToJump;
-                int toJumpPossitionIndex, toJumpRow, toJumpColumn;
-                double A = 0;
-                double nA = 0;
+            // std::cout << "Remain number of iteration: " << evo_iterations << std::endl;
+        }
+        else
+        {
+            valid_m.unlock();
 
+            // std::cout << "Not valid RND oxygen" << std::endl;
+        }
+    }
+
+    stop_flag = true;
+}
+
+void SiliconOxideMatrix::evolutionCheckJuping()
+{
+    while (!stop_flag)
+    {
+        queue_m.lock();
+        if (!threadChoosenOxygenQueue.empty())
+        {
+            std::vector<std::pair<int, int>> possitionsToJump;
+            int toJumpPossitionIndex, toJumpRow, toJumpColumn;
+            double A = 0;
+            double nA = 0;
+
+            ++func_count;
+
+            int rndOxygenIndex = threadChoosenOxygenQueue.front();
+            threadChoosenOxygenQueue.pop();
+            queue_m.unlock();
+
+            int oxygenRndRow = allOxygenPossitions[rndOxygenIndex].row;
+            int oxygenRndColumn = allOxygenPossitions[rndOxygenIndex].column;
+            bool method = (oxygenRndRow % 2 == 1); // horizontal == 1, vertical == 0
+
+            // std::cout << "Found available places to jump" << std::endl;
+
+            possitionsToJump = getJumpPossitions(oxygenRndRow, oxygenRndColumn, method);
+
+            if (method)
+            {
+                A = calculatePenaltyForKremniy(oxygenRndRow, (oxygenRndColumn - 1 + N) % N) + calculatePenaltyForKremniy(oxygenRndRow, (oxygenRndColumn + 1 + N) % N);
+            }
+            else
+            {
+                A = calculatePenaltyForKremniy((oxygenRndRow - 1 + N) % N, oxygenRndColumn) + calculatePenaltyForKremniy((oxygenRndRow + 1 + N) % N, oxygenRndColumn);
+            }
+
+            // std::cout << "Energy A: " << A << std::endl;
+
+            toJumpPossitionIndex = getRdmIntNumber(0, possitionsToJump.size());
+            toJumpRow = possitionsToJump[toJumpPossitionIndex].first;
+            toJumpColumn = possitionsToJump[toJumpPossitionIndex].second;
+
+            // std::cout << "RND toJumpPossition row: " << toJumpRow << ", column: " << toJumpColumn << std::endl;
+
+            if (data[(toJumpRow - 1 + N) % N][toJumpColumn].value == 0.0)
+            {
+                nA = calculatePenaltyForKremniy((toJumpRow - 1 + N) % N, toJumpColumn) + calculatePenaltyForKremniy((toJumpRow + 1 + N) % N, toJumpColumn);
+            }
+            else
+            {
+                nA = calculatePenaltyForKremniy(toJumpRow, (toJumpColumn - 1 + N) % N) + calculatePenaltyForKremniy(toJumpRow, (toJumpColumn + 1 + N) % N);
+            }
+
+            // std::cout << "Energy nA: " << nA << std::endl;
+
+            if (nA < A)
+            {
                 valid_m.lock();
-                possitionsToJump = getJumpPossitionsAndChangeValidationToNV(oxygenRndRow, oxygenRndColumn, method);
+                allOxygenPossitions[rndOxygenIndex].row = toJumpRow;
+                allOxygenPossitions[rndOxygenIndex].column = toJumpColumn;
+                data[toJumpRow][toJumpColumn].value = 2.0;
+                data[oxygenRndRow][oxygenRndColumn].value = 1.0;
+                ++jump_count;
                 valid_m.unlock();
 
-                if (method)
-                {
-                    A = calculatePenaltyForKremniy(oxygenRndRow, (oxygenRndColumn - 1 + N) % N) + calculatePenaltyForKremniy(oxygenRndRow, (oxygenRndColumn + 1 + N) % N);
-                }
-                else
-                {
-                    A = calculatePenaltyForKremniy((oxygenRndRow - 1 + N) % N, oxygenRndColumn) + calculatePenaltyForKremniy((oxygenRndRow + 1 + N) % N, oxygenRndColumn);
-                }
+                // std::cout << "JUMPED!" << std::endl;
+            }
+            else
+            {
+                // std::cout << "nA >= A, trying metropolis condition" << std::endl;
 
-                // std::cout << "Energy A: " << A << std::endl;
-
-                toJumpPossitionIndex = getRdmIntNumber(0, possitionsToJump.size());
-                toJumpRow = possitionsToJump[toJumpPossitionIndex].first;
-                toJumpColumn = possitionsToJump[toJumpPossitionIndex].second;
-
-                // std::cout << "RND toJumpPossition row: " << toJumpRow << ", column: " << toJumpColumn << std::endl;
-
-                if (data[(toJumpRow - 1 + N) % N][toJumpColumn].value == 0.0)
-                {
-                    nA = calculatePenaltyForKremniy((toJumpRow - 1 + N) % N, oxygenRndColumn) + calculatePenaltyForKremniy((oxygenRndRow + 1 + N) % N, oxygenRndColumn);
-                }
-                else
-                {
-                    nA = calculatePenaltyForKremniy(toJumpRow, (oxygenRndColumn - 1 + N) % N) + calculatePenaltyForKremniy(oxygenRndRow, (oxygenRndColumn + 1 + N) % N);
-                }
-
-                // std::cout << "Energy nA: " << nA << std::endl;
-
-                if (nA < A)
+                if (metropolisCondition(A, nA))
                 {
                     valid_m.lock();
-                    allOxygenPossitions[oxygenRndPossitionIndex].row = toJumpRow;
-                    allOxygenPossitions[oxygenRndPossitionIndex].column = toJumpColumn;
+                    allOxygenPossitions[rndOxygenIndex].row = toJumpRow;
+                    allOxygenPossitions[rndOxygenIndex].column = toJumpColumn;
                     data[toJumpRow][toJumpColumn].value = 2.0;
                     data[oxygenRndRow][oxygenRndColumn].value = 1.0;
+                    ++jump_count;
                     valid_m.unlock();
 
                     // std::cout << "JUMPED!" << std::endl;
                 }
                 else
                 {
-                    // std::cout << "nA >= A, trying metropolis condition" << std::endl;
-
-                    if (metropolisCondition(A, nA))
-                    {
-                        valid_m.lock();
-                        allOxygenPossitions[oxygenRndPossitionIndex].row = toJumpRow;
-                        allOxygenPossitions[oxygenRndPossitionIndex].column = toJumpColumn;
-                        data[toJumpRow][toJumpColumn].value = 2.0;
-                        data[oxygenRndRow][oxygenRndColumn].value = 1.0;
-                        valid_m.unlock();
-
-                        // std::cout << "JUMPED!" << std::endl;
-                    }
-                    else
-                    {
-                        // std::cout << "Metropolis condition to aged" << std::endl;
-                    }
+                    // std::cout << "Metropolis condition not aged" << std::endl;
                 }
-
-                valid_m.lock();
-                changeValidationToV(oxygenRndRow, oxygenRndColumn, method);
-                valid_m.unlock();
-            }
-            else
-            {
-                valid_m.unlock();
-                // std::cout << "Ofset position(s) not valid or no available places" << std::endl;
             }
 
             valid_m.lock();
-            allOxygenPossitions[oxygenRndPossitionIndex].valid = true;
+            changeMatrixValidation(oxygenRndRow, oxygenRndColumn, method, true);
             valid_m.unlock();
-
-
-            // valid_m.lock();
-            // if (debug_getNumber_test() <= 2)
-            // {   
-            //     std::cout << "Something went wrong:" << std::endl;
-            //     std::cout << "  Oxygen number:" << debug_getNumber_test() << std::endl;
-            //     std::cout << "  Remain iterations: " << evo_iterations << std::endl;
-            //     std::cout << "  Row: " << oxygenRndRow << ", Column: " << oxygenRndColumn << std::endl;
-
-            //     for (int i = 0; i < allOxygenPossitions.size(); ++i)
-            //     {
-            //         std::cout << "  Oxygen number: " << i << ", Row: " << allOxygenPossitions[i].row << ", Column: " << allOxygenPossitions[i].column << std::endl;
-            //     }
-                
-            //     printMatrixToFile(std::to_string(evo_iterations));
-
-            //     numberOfOxygenAtoms = debug_getNumber_test();
-            //     exit(0);
-            // }
-            // valid_m.unlock();
         }
         else
         {
-            valid_m.unlock();
-            // std::cout << "Oxygen possition not valid" << std::endl;
+            queue_m.unlock();
+            // std::cout << "Queue is empty" << std::endl;
         }
-        
-        // std::cout << "End iteration" << std::endl <<std::endl;
-
-        //printMatrixToFile("map_evo.txt");
-        --evo_iterations;
     }
 }
 
@@ -382,7 +383,9 @@ void SiliconOxideMatrix::debug_getNumber()
         }
     }
 
-    std::cout << "count: " << count << std::endl;
+    std::cout << "Oxygen count: " << count << std::endl;
+    // std::cout << "Func count: " << jump_count << std::endl;
+    std::cout << "Jump count: " << jump_count << std::endl;
 }
 
 // Method to calculate the number of oxygen atoms and handle boundary transitions
@@ -393,7 +396,7 @@ int SiliconOxideMatrix::calculationNumberOfOxigens(int i, int j)
     if (data[(i - 1 + N) % N][j].value == 2) 
     {
         ++value;
-    }   
+    }
     if (data[(i + 1 + N) % N][j].value == 2) 
     {
         ++value;
@@ -433,38 +436,49 @@ double SiliconOxideMatrix::calculatePenaltyForKremniy(int i, int j)
     return Delta[calculationNumberOfOxigens(i, j)];
 }
 
-// void SiliconOxideMatrix::printMatrixToImage(const std::string& fileName) {
-//     std::ofstream outputFile(fileName);
+void SiliconOxideMatrix::printMatrixToImage(const std::string& fileName) {
+    std::ofstream outputFile(fileName);
     
-//     if (outputFile.is_open()) {
-//         outputFile << "P3\n" << maxj << " " << maxi << "\n255\n";
-//         // Define a map to associate values with colors
-//         std::map<int, std::string> colorMap;
-//         colorMap[0] = "0 0 0 ";        // Black
-//         colorMap[1] = "255 0 0 ";      // Red
-//         colorMap[2] = "0 0 255 ";      // Blue
-//         colorMap[3] = "0 255 0 ";      // Green
-//         colorMap[4] = "255 255 0 ";    // Yellow
+    if (outputFile.is_open()) 
+    {
+        outputFile << "P3\n" << N << " " << N << "\n255\n";
+        // Define a map to associate values with colors
+        std::map<int, std::string> colorMap;
+        colorMap[0] = "0 0 0 ";        // Black
+        colorMap[1] = "255 0 0 ";      // Red
+        colorMap[2] = "0 0 255 ";      // Blue
+        colorMap[3] = "0 255 0 ";      // Green
+        colorMap[4] = "255 255 0 ";    // Yellow
 
-//         for (int i = 0; i < maxi - 1; i++) {
-//             for (int j = 0; j < maxj - 1; j++) {
-//                  if ((i + 1) % 2 && (j + 1) % 2) { // [even][even] position calculation
-                //     unsigned int value = calculationNumberOfOxigens(i, j); // Number of oxygen atoms calculation
-                //     // Use the color map to set the color based on the value
-                //     if (colorMap.find(value) != colorMap.end()) {
-                //         outputFile << colorMap[value];
-                //     } else {
-                //         outputFile << "255 255 255 "; // Default to white for unknown values
-                //     }
-                // }
-//             }
-//             outputFile << "\n";
-//         }
-//         outputFile.close();
-//         std::cout << "Matrix has been saved as image map.ppm " << fileName << std::endl;
-//     } else {
-//         std::cerr << "Unable to save the image map.ppm" << fileName << std::endl;
-//     }
-// }
+        for (int i = 0; i < N; i++)
+        {
+            for (int j = 0; j < N; j++)
+            {
+                 if ((i % 2) && (j % 2)) // [even][even] position calculation
+                 {
+                    unsigned int value = calculationNumberOfOxigens(i, j);
 
-
+                    if (colorMap.find(value) != colorMap.end())
+                    {
+                        outputFile << colorMap[value];
+                    }
+                    else
+                    {
+                        // nothing to do   
+                    }
+                }
+                else
+                {
+                    outputFile << "255 255 255 "; // Default to white for unknown values
+                }
+            }
+            outputFile << "\n";
+        }
+        outputFile.close();
+        std::cout << "Matrix has been saved as image " << fileName << std::endl;
+    }
+    else
+    {
+        std::cerr << "Unable to save the image map.ppm" << fileName << std::endl;
+    }
+}

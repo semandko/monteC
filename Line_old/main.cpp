@@ -32,7 +32,7 @@ void configurator (void)
         matrix.printMatrixToFile("map_old.txt");
 
         auto start = std::chrono::high_resolution_clock::now();
-        matrix.evolution();
+        matrix.evolutionFindOxygen();
         auto stop = std::chrono::high_resolution_clock::now();
 
         matrix.printMatrixToFile("map_evo.txt");

@@ -36,7 +36,7 @@ void configurator (void)
 
         for (auto& th : threads)
         {
-            th = std::thread(&SiliconOxideMatrix::evolution, &matrix);
+            th = std::thread(&SiliconOxideMatrix::evolutionFindOxygen, &matrix);
         }
 
         auto start = std::chrono::high_resolution_clock::now();

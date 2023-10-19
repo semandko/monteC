@@ -5,6 +5,7 @@
 #include <vector>
 #include <fstream>
 #include <mutex>
+#include <queue>
 
 
 #define _CONST_A 1.38e-23
@@ -46,17 +47,19 @@ public:
     int getRdmIntNumber(int start, int notIncludedEnd);
     double getRdmDoubleNumber(int start, int notIncludedEnd);
     void putOxygenAtomsOnRdmPlaces();
-    void evolution();
+    void evolutionFindOxygen();
+    void evolutionCheckJuping();
     bool checkingCellOccupationAndJumping(int row, int column, bool method);
-    std::vector<std::pair<int, int>> getJumpPossitionsAndChangeValidationToNV(int row, int column, bool method);
+    std::vector<std::pair<int, int>> getJumpPossitions(int row, int column, bool method);
     void changeValidationToV(int row, int column, bool method);
+    void changeMatrixValidation(int row, int column, bool method, bool validation);
     void debug_getNumber();
     int debug_getNumber_test();
     //
 
     int calculationNumberOfOxigens(int i, int j);
     void printMatrixToFile(const std::string& fileName);
-    // void printMatrixToImage(const std::string& fileName);
+    void printMatrixToImage(const std::string& fileName);
     bool metropolisCondition(double a, double b);
 	 
 private:
@@ -68,16 +71,18 @@ private:
     std::vector<OxygenPos> allPossibleOxygenPlaces;
     std::vector<OxygenPos> allOxygenPossitions;
 
-    std::vector<std::pair<int, int>> horizontalKremniyPlacesOfset;
-    std::vector<std::pair<int, int>> verticalKremniyPlacesOfset;
     std::vector<std::pair<int, int>> horizontalOxygenPlacesOfset;
     std::vector<std::pair<int, int>> verticalOxygenPlacesOfset;
 
     int generalNumberOfAtoms;
     int numberOfOxygenAtoms;
     long long evo_iterations;
+    unsigned long long jump_count;
+    unsigned long long func_count; 
+    bool stop_flag;
 
-    std::mutex iterations_m;
+    std::queue<int> threadChoosenOxygenQueue;
+    std::mutex queue_m;
     std::mutex valid_m;
     //
 
