@@ -1,0 +1,310 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+ 15.28      0.11     0.11                             countSurroundingRomb(int, int)
+  6.94      0.16     0.05                             countSurroundingOs(int, int)
+  5.56      0.20     0.04                             findOForJumping(tJumpCell&)
+  5.56      0.24     0.04                             std::ostream::sentry::sentry(std::ostream&)
+  4.17      0.27     0.03                             _ZN9__gnu_cxx13new_allocatorISt6vectorI9tJumpCellSaIS2_EEE9constructIS4_IRKS4_EEEvPT_DpOT0_
+  4.17      0.30     0.03                             void std::_Destroy<tJumpCell*>(tJumpCell*, tJumpCell*)
+  4.17      0.33     0.03                             operator new(unsigned long long)
+  2.78      0.35     0.02                             std::vector<tJumpCell, std::allocator<tJumpCell> >::_M_check_len(unsigned long long, char const*) const
+  2.78      0.37     0.02                             std::vector<tJumpCell, std::allocator<tJumpCell> >::size() const
+  2.78      0.39     0.02                             std::basic_streambuf<char, std::char_traits<char> >::xsputn(char const*, long long)
+  2.78      0.41     0.02                             std::move_iterator<tJumpCell*> std::__make_move_if_noexcept_iterator<tJumpCell*, std::move_iterator<tJumpCell*> >(tJumpCell*)
+  2.78      0.43     0.02                             unsigned long long const& std::max<unsigned long long>(unsigned long long const&, unsigned long long const&)
+  2.78      0.45     0.02                             void std::_Destroy<tJumpCell*, tJumpCell>(tJumpCell*, tJumpCell*, std::allocator<tJumpCell>&)
+  1.39      0.46     0.01                             rombPenaltyCalculation(tJumpCell&)
+  1.39      0.47     0.01                             __gnu_cxx::new_allocator<tJumpCell>::deallocate(tJumpCell*, unsigned long long)
+  1.39      0.48     0.01                             __gnu_cxx::__alloc_traits<std::allocator<tJumpCell> >::_S_select_on_copy(std::allocator<tJumpCell> const&)
+  1.39      0.49     0.01                             std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_M_get_Tp_allocator() const
+  1.39      0.50     0.01                             std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_Vector_impl::_Vector_impl()
+  1.39      0.51     0.01                             std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_Vector_impl::~_Vector_impl()
+  1.39      0.52     0.01                             std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_M_deallocate(tJumpCell*, unsigned long long)
+  1.39      0.53     0.01                             std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_M_get_Tp_allocator()
+  1.39      0.54     0.01                             std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::~_Vector_base()
+  1.39      0.55     0.01                             std::basic_filebuf<char, std::char_traits<char> >::xsputn(char const*, long long)
+  1.39      0.56     0.01                             std::move_iterator<tJumpCell*>::move_iterator(tJumpCell*)
+  1.39      0.57     0.01                             std::allocator_traits<std::allocator<tJumpCell> >::max_size(std::allocator<tJumpCell> const&)
+  1.39      0.58     0.01                             std::map<int, std::string, std::less<int>, std::allocator<std::pair<int const, std::string> > >::end()
+  1.39      0.59     0.01                             std::map<int, std::string, std::less<int>, std::allocator<std::pair<int const, std::string> > >::operator[](int&&)
+  1.39      0.60     0.01                             std::vector<tRomb, std::allocator<tRomb> >::operator[](unsigned long long)
+  1.39      0.61     0.01                             void std::vector<tJumpCell, std::allocator<tJumpCell> >::_M_emplace_back_aux<tJumpCell const&>(tJumpCell const&)
+  1.39      0.62     0.01                             std::vector<tJumpCell, std::allocator<tJumpCell> >::~vector()
+  1.39      0.63     0.01                             std::vector<std::vector<tRomb, std::allocator<tRomb> >, std::allocator<std::vector<tRomb, std::allocator<tRomb> > > >::operator[](unsigned long long)
+  1.39      0.64     0.01                             std::_Miter_base<std::move_iterator<tJumpCell*> >::iterator_type std::__miter_base<std::move_iterator<tJumpCell*> >(std::move_iterator<tJumpCell*>)
+  1.39      0.65     0.01                             tJumpCell* std::__copy_move_a<true, tJumpCell*, tJumpCell*>(tJumpCell*, tJumpCell*, tJumpCell*)
+  1.39      0.66     0.01                             tJumpCell* std::__copy_move_a2<false, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*>(__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*)
+  1.39      0.67     0.01                             tJumpCell* std::uninitialized_copy<std::move_iterator<tJumpCell*>, tJumpCell*>(std::move_iterator<tJumpCell*>, std::move_iterator<tJumpCell*>, tJumpCell*)
+  1.39      0.68     0.01                             tJumpCell* std::__uninitialized_copy_a<__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*, tJumpCell>(__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*, std::allocator<tJumpCell>&)
+  1.39      0.69     0.01                             tJumpCell* std::copy<__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*>(__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*)
+  1.39      0.70     0.01                             std::vector<tJumpCell, std::allocator<tJumpCell> > const& std::forward<std::vector<tJumpCell, std::allocator<tJumpCell> > const&>(std::remove_reference<std::vector<tJumpCell, std::allocator<tJumpCell> > const&>::type&)
+  1.39      0.71     0.01                             std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)
+  1.39      0.72     0.01                             operator new(unsigned long long, void*)
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 4 byte(s) for 1.39% of 0.72 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     15.3    0.11    0.00                 countSurroundingRomb(int, int) [1]
+-----------------------------------------------
+                                                 <spontaneous>
+[2]      6.9    0.05    0.00                 countSurroundingOs(int, int) [2]
+-----------------------------------------------
+                                                 <spontaneous>
+[3]      5.6    0.04    0.00                 findOForJumping(tJumpCell&) [3]
+-----------------------------------------------
+                                                 <spontaneous>
+[4]      5.6    0.04    0.00                 std::ostream::sentry::sentry(std::ostream&) [4]
+-----------------------------------------------
+                                                 <spontaneous>
+[5]      4.2    0.03    0.00                 _ZN9__gnu_cxx13new_allocatorISt6vectorI9tJumpCellSaIS2_EEE9constructIS4_IRKS4_EEEvPT_DpOT0_ [5]
+-----------------------------------------------
+                                                 <spontaneous>
+[6]      4.2    0.03    0.00                 void std::_Destroy<tJumpCell*>(tJumpCell*, tJumpCell*) [6]
+-----------------------------------------------
+                                                 <spontaneous>
+[7]      4.2    0.03    0.00                 operator new(unsigned long long) [7]
+-----------------------------------------------
+                                                 <spontaneous>
+[8]      2.8    0.02    0.00                 std::vector<tJumpCell, std::allocator<tJumpCell> >::_M_check_len(unsigned long long, char const*) const [8]
+-----------------------------------------------
+                                                 <spontaneous>
+[9]      2.8    0.02    0.00                 std::vector<tJumpCell, std::allocator<tJumpCell> >::size() const [9]
+-----------------------------------------------
+                                                 <spontaneous>
+[10]     2.8    0.02    0.00                 std::basic_streambuf<char, std::char_traits<char> >::xsputn(char const*, long long) [10]
+-----------------------------------------------
+                                                 <spontaneous>
+[11]     2.8    0.02    0.00                 std::move_iterator<tJumpCell*> std::__make_move_if_noexcept_iterator<tJumpCell*, std::move_iterator<tJumpCell*> >(tJumpCell*) [11]
+-----------------------------------------------
+                                                 <spontaneous>
+[12]     2.8    0.02    0.00                 unsigned long long const& std::max<unsigned long long>(unsigned long long const&, unsigned long long const&) [12]
+-----------------------------------------------
+                                                 <spontaneous>
+[13]     2.8    0.02    0.00                 void std::_Destroy<tJumpCell*, tJumpCell>(tJumpCell*, tJumpCell*, std::allocator<tJumpCell>&) [13]
+-----------------------------------------------
+                                                 <spontaneous>
+[14]     1.4    0.01    0.00                 rombPenaltyCalculation(tJumpCell&) [14]
+-----------------------------------------------
+                                                 <spontaneous>
+[15]     1.4    0.01    0.00                 __gnu_cxx::new_allocator<tJumpCell>::deallocate(tJumpCell*, unsigned long long) [15]
+-----------------------------------------------
+                                                 <spontaneous>
+[16]     1.4    0.01    0.00                 __gnu_cxx::__alloc_traits<std::allocator<tJumpCell> >::_S_select_on_copy(std::allocator<tJumpCell> const&) [16]
+-----------------------------------------------
+                                                 <spontaneous>
+[17]     1.4    0.01    0.00                 std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_M_get_Tp_allocator() const [17]
+-----------------------------------------------
+                                                 <spontaneous>
+[18]     1.4    0.01    0.00                 std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_Vector_impl::_Vector_impl() [18]
+-----------------------------------------------
+                                                 <spontaneous>
+[19]     1.4    0.01    0.00                 std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_Vector_impl::~_Vector_impl() [19]
+-----------------------------------------------
+                                                 <spontaneous>
+[20]     1.4    0.01    0.00                 std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_M_deallocate(tJumpCell*, unsigned long long) [20]
+-----------------------------------------------
+                                                 <spontaneous>
+[21]     1.4    0.01    0.00                 std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_M_get_Tp_allocator() [21]
+-----------------------------------------------
+                                                 <spontaneous>
+[22]     1.4    0.01    0.00                 std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::~_Vector_base() [22]
+-----------------------------------------------
+                                                 <spontaneous>
+[23]     1.4    0.01    0.00                 std::basic_filebuf<char, std::char_traits<char> >::xsputn(char const*, long long) [23]
+-----------------------------------------------
+                                                 <spontaneous>
+[24]     1.4    0.01    0.00                 std::move_iterator<tJumpCell*>::move_iterator(tJumpCell*) [24]
+-----------------------------------------------
+                                                 <spontaneous>
+[25]     1.4    0.01    0.00                 std::allocator_traits<std::allocator<tJumpCell> >::max_size(std::allocator<tJumpCell> const&) [25]
+-----------------------------------------------
+                                                 <spontaneous>
+[26]     1.4    0.01    0.00                 std::map<int, std::string, std::less<int>, std::allocator<std::pair<int const, std::string> > >::end() [26]
+-----------------------------------------------
+                                                 <spontaneous>
+[27]     1.4    0.01    0.00                 std::map<int, std::string, std::less<int>, std::allocator<std::pair<int const, std::string> > >::operator[](int&&) [27]
+-----------------------------------------------
+                                                 <spontaneous>
+[28]     1.4    0.01    0.00                 std::vector<tRomb, std::allocator<tRomb> >::operator[](unsigned long long) [28]
+-----------------------------------------------
+                                                 <spontaneous>
+[29]     1.4    0.01    0.00                 void std::vector<tJumpCell, std::allocator<tJumpCell> >::_M_emplace_back_aux<tJumpCell const&>(tJumpCell const&) [29]
+-----------------------------------------------
+                                                 <spontaneous>
+[30]     1.4    0.01    0.00                 std::vector<tJumpCell, std::allocator<tJumpCell> >::~vector() [30]
+-----------------------------------------------
+                                                 <spontaneous>
+[31]     1.4    0.01    0.00                 std::vector<std::vector<tRomb, std::allocator<tRomb> >, std::allocator<std::vector<tRomb, std::allocator<tRomb> > > >::operator[](unsigned long long) [31]
+-----------------------------------------------
+                                                 <spontaneous>
+[32]     1.4    0.01    0.00                 std::_Miter_base<std::move_iterator<tJumpCell*> >::iterator_type std::__miter_base<std::move_iterator<tJumpCell*> >(std::move_iterator<tJumpCell*>) [32]
+-----------------------------------------------
+                                                 <spontaneous>
+[33]     1.4    0.01    0.00                 tJumpCell* std::__copy_move_a<true, tJumpCell*, tJumpCell*>(tJumpCell*, tJumpCell*, tJumpCell*) [33]
+-----------------------------------------------
+                                                 <spontaneous>
+[34]     1.4    0.01    0.00                 tJumpCell* std::__copy_move_a2<false, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*>(__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*) [34]
+-----------------------------------------------
+                                                 <spontaneous>
+[35]     1.4    0.01    0.00                 tJumpCell* std::uninitialized_copy<std::move_iterator<tJumpCell*>, tJumpCell*>(std::move_iterator<tJumpCell*>, std::move_iterator<tJumpCell*>, tJumpCell*) [35]
+-----------------------------------------------
+                                                 <spontaneous>
+[36]     1.4    0.01    0.00                 tJumpCell* std::__uninitialized_copy_a<__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*, tJumpCell>(__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*, std::allocator<tJumpCell>&) [36]
+-----------------------------------------------
+                                                 <spontaneous>
+[37]     1.4    0.01    0.00                 tJumpCell* std::copy<__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*>(__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*) [37]
+-----------------------------------------------
+                                                 <spontaneous>
+[38]     1.4    0.01    0.00                 std::vector<tJumpCell, std::allocator<tJumpCell> > const& std::forward<std::vector<tJumpCell, std::allocator<tJumpCell> > const&>(std::remove_reference<std::vector<tJumpCell, std::allocator<tJumpCell> > const&>::type&) [38]
+-----------------------------------------------
+                                                 <spontaneous>
+[39]     1.4    0.01    0.00                 std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*) [39]
+-----------------------------------------------
+                                                 <spontaneous>
+[40]     1.4    0.01    0.00                 operator new(unsigned long long, void*) [40]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+   [3] findOForJumping(tJumpCell&) [21] std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_M_get_Tp_allocator() [34] tJumpCell* std::__copy_move_a2<false, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*>(__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*)
+   [2] countSurroundingOs(int, int) [22] std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::~_Vector_base() [35] tJumpCell* std::uninitialized_copy<std::move_iterator<tJumpCell*>, tJumpCell*>(std::move_iterator<tJumpCell*>, std::move_iterator<tJumpCell*>, tJumpCell*)
+   [1] countSurroundingRomb(int, int) [23] std::basic_filebuf<char, std::char_traits<char> >::xsputn(char const*, long long) [36] tJumpCell* std::__uninitialized_copy_a<__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*, tJumpCell>(__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*, std::allocator<tJumpCell>&)
+  [14] rombPenaltyCalculation(tJumpCell&) [24] std::move_iterator<tJumpCell*>::move_iterator(tJumpCell*) [11] std::move_iterator<tJumpCell*> std::__make_move_if_noexcept_iterator<tJumpCell*, std::move_iterator<tJumpCell*> >(tJumpCell*)
+  [15] __gnu_cxx::new_allocator<tJumpCell>::deallocate(tJumpCell*, unsigned long long) [10] std::basic_streambuf<char, std::char_traits<char> >::xsputn(char const*, long long) [12] unsigned long long const& std::max<unsigned long long>(unsigned long long const&, unsigned long long const&)
+   [5] _ZN9__gnu_cxx13new_allocatorISt6vectorI9tJumpCellSaIS2_EEE9constructIS4_IRKS4_EEEvPT_DpOT0_ [25] std::allocator_traits<std::allocator<tJumpCell> >::max_size(std::allocator<tJumpCell> const&) [37] tJumpCell* std::copy<__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*>(__gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, __gnu_cxx::__normal_iterator<tJumpCell const*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell*)
+  [16] __gnu_cxx::__alloc_traits<std::allocator<tJumpCell> >::_S_select_on_copy(std::allocator<tJumpCell> const&) [26] std::map<int, std::string, std::less<int>, std::allocator<std::pair<int const, std::string> > >::end() [38] std::vector<tJumpCell, std::allocator<tJumpCell> > const& std::forward<std::vector<tJumpCell, std::allocator<tJumpCell> > const&>(std::remove_reference<std::vector<tJumpCell, std::allocator<tJumpCell> > const&>::type&)
+  [17] std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_M_get_Tp_allocator() const [27] std::map<int, std::string, std::less<int>, std::allocator<std::pair<int const, std::string> > >::operator[](int&&) [6] void std::_Destroy<tJumpCell*>(tJumpCell*, tJumpCell*)
+   [8] std::vector<tJumpCell, std::allocator<tJumpCell> >::_M_check_len(unsigned long long, char const*) const [28] std::vector<tRomb, std::allocator<tRomb> >::operator[](unsigned long long) [13] void std::_Destroy<tJumpCell*, tJumpCell>(tJumpCell*, tJumpCell*, std::allocator<tJumpCell>&)
+   [9] std::vector<tJumpCell, std::allocator<tJumpCell> >::size() const [29] void std::vector<tJumpCell, std::allocator<tJumpCell> >::_M_emplace_back_aux<tJumpCell const&>(tJumpCell const&) [39] std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)
+   [4] std::ostream::sentry::sentry(std::ostream&) [30] std::vector<tJumpCell, std::allocator<tJumpCell> >::~vector() [7] operator new(unsigned long long)
+  [18] std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_Vector_impl::_Vector_impl() [31] std::vector<std::vector<tRomb, std::allocator<tRomb> >, std::allocator<std::vector<tRomb, std::allocator<tRomb> > > >::operator[](unsigned long long) [40] operator new(unsigned long long, void*)
+  [19] std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_Vector_impl::~_Vector_impl() [32] std::_Miter_base<std::move_iterator<tJumpCell*> >::iterator_type std::__miter_base<std::move_iterator<tJumpCell*> >(std::move_iterator<tJumpCell*>)
+  [20] std::_Vector_base<tJumpCell, std::allocator<tJumpCell> >::_M_deallocate(tJumpCell*, unsigned long long) [33] tJumpCell* std::__copy_move_a<true, tJumpCell*, tJumpCell*>(tJumpCell*, tJumpCell*, tJumpCell*)
