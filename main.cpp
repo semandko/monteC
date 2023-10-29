@@ -38,7 +38,7 @@ typedef struct {
 
 // variables
 int n = 500;
-double iteration = 100000; // Testing
+double iteration = 10000000; // Testing
 
 double x; // Prompt the user to input the index of Oxygen (type O cell) in the matrix
 int numberO;
@@ -72,12 +72,10 @@ void evolution(void);
 bool printMatrixToTxt(void);
 void printMatrixToImage(const std::string& fileName);
 
-// void printMatrixToImagePNG(const std::string& fileName);
-
 void configurator(void);
 
 // testing block
-void testOcupationO(void);
+void countCells(void);
 // testing block
 
 
@@ -110,21 +108,9 @@ void fillOxigen() {
     }
 }
 
-#if 0
-// may be optimized
-double randomGenerator(unsigned int first_interval, unsigned int last_interval) {
-    std::random_device rd; // Create a random number generator engine
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<double> dist(first_interval, last_interval);
-    return dist(gen);
-}
-#endif
-
-// Replace the previous randomGenerator function
 double randomGenerator(unsigned int first_interval, unsigned int last_interval) {
     int randomValue = rand();  // Generate a random integer using rand()
     
-    // Scale the random integer to the desired interval
     double scaledValue = first_interval + (randomValue / (RAND_MAX + 1.0)) * (last_interval - first_interval);
 
     return scaledValue;
