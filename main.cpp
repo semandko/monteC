@@ -38,7 +38,7 @@ typedef struct {
 
 // variables
 int n = 500;
-double iteration = 10000000; // Testing
+double iteration = 1000000000; // Testing
 
 double x; // Prompt the user to input the index of Oxygen (type O cell) in the matrix
 int numberO;
