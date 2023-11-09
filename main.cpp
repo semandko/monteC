@@ -32,27 +32,33 @@ typedef struct {
 
 typedef struct {
 	tcell cellTypeO;
-	double penalty;
+	float penalty;
 } tJumpCell;
 
 
 // variables
 int n = 500;
-double iteration = 1000000000; // Testing
+uint32_t iteration = 1000000000; // Testing
 
-double x; // Prompt the user to input the index of Oxygen (type O cell) in the matrix
+float x; // Prompt the user to input the index of Oxygen (type O cell) in the matrix
 int numberO;
 
 std::vector<std::vector<tRomb>> grid(n, std::vector<tRomb>(n, { {0, 0}, 1, 1 }));
 std::vector<std::vector<tJumpCell>> jumpFreeSpaces; // 
 
-std::vector<double> Delta{0.0, 0.5, 0.51, 0.22, 0.0}; // penalty energy
+std::vector<float> Delta{0.0, 0.5, 0.51, 0.22, 0.0}; // penalty energy
 
-double penaltyValue;
+int di[] = {-1, 1, 0, 0}; // vertical
+int dj[] = {0, 0, -1, 1}; // horizontal
+		
+tJumpCell jumpNewCell;
+tJumpCell jumpCell; // current cell
 
-double x0 = _X_0;
-double kB = _K_B;
-double kT_eV = _kT_EV(_T);
+float penaltyValue;
+
+float x0 = _X_0;
+float kB = _K_B;
+float kT_eV = _kT_EV(_T);
 int T = _T;
 int jumpingCounts;
 
@@ -61,9 +67,9 @@ void fillMatrix();
 void fillOxigen();
 int countSurroundingOs(int i, int j, bool isPresent);
 void countSurroundingRomb(int i, int j);
-double randomGenerator(unsigned int first_interval, unsigned int last_interval);
-double penalty(int i, int j);
-bool metropolisCondition(double oldPenaltySum, double newPenaltySum);
+float randomGenerator(unsigned int first_interval, unsigned int last_interval);
+float penalty(int i, int j);
+bool metropolisCondition(float oldPenaltySum, float newPenaltySum);
 bool rombPenaltyCalculation(tJumpCell& jumpCell);
 bool findOForJumping(tJumpCell& jumpCell);
 void jumping(tJumpCell& jumpCell);
@@ -86,7 +92,7 @@ void fillMatrix() {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             if (_SILICON(i,j)) {
-                grid[i][j].value = 0.0; // Set value to 1 for [odd][odd] cells
+                grid[i][j].value = 0; // Set value to 1 for [odd][odd] cells
             }
         }
     }
@@ -108,10 +114,10 @@ void fillOxigen() {
     }
 }
 
-double randomGenerator(unsigned int first_interval, unsigned int last_interval) {
+float randomGenerator(unsigned int first_interval, unsigned int last_interval) {
     int randomValue = rand();  // Generate a random integer using rand()
     
-    double scaledValue = first_interval + (randomValue / (RAND_MAX + 1.0)) * (last_interval - first_interval);
+    float scaledValue = first_interval + (randomValue / (RAND_MAX + 1.0)) * (last_interval - first_interval);
 
     return scaledValue;
 }
@@ -119,10 +125,7 @@ double randomGenerator(unsigned int first_interval, unsigned int last_interval) 
 
 // may be optimized
 int countSurroundingOs(int i, int j) {
-
 	int countPresent = 0;
-	int di[] = {-1, 1, 0, 0}; // vertical
-	int dj[] = {0, 0, -1, 1}; // horizontal
 
 	for (int dir = 0; dir < 4; dir++) {
 		int ni = (i + di[dir] + n) % n; // type O index
@@ -140,9 +143,8 @@ int countSurroundingOs(int i, int j) {
 // may be optimized
 void countSurroundingRomb(int i, int j) {
     if (_SILICON(i,j)) {
-        int di[] = {-1, 1, 0, 0}; // vertical
-        int dj[] = {0, 0, -1, 1}; // horizontal
 
+		tJumpCell jumpCell;
         for (int dir = 0; dir < 4; dir++) {
             int ni = (i + di[dir] + n) % n; // type O index
             int nj = (j + dj[dir] + n) % n; // type O index
@@ -150,8 +152,7 @@ void countSurroundingRomb(int i, int j) {
             // Check if it's a free space
             if (grid[ni][nj].value != 2) {
             	
-            	// structure tJumpCell
-                tJumpCell jumpCell;
+            	// structure tJumpCell     
                 jumpCell.cellTypeO.i = ni;
                 jumpCell.cellTypeO.j = nj;
                 jumpCell.penalty = 0.0;
@@ -177,6 +178,7 @@ bool rombPenaltyCalculation(tJumpCell& jumpCell) {
     int j = jumpCell.cellTypeO.j; // for type O
 	int i_a, j_a;
 	int i_b, j_b;
+	jumpCell.penalty = 0;
 	
     if (i % 2 == 1) { // Index for type O
         // Horizontal case for cells type K
@@ -206,8 +208,8 @@ bool rombPenaltyCalculation(tJumpCell& jumpCell) {
 }
 
 // may be optimized
-double penalty(int i, int j) {
-	double penalty = 0;
+float penalty(int i, int j) {
+	float penalty = 0;
 	
 	if (_SILICON(i,j)) {
 		int count = countSurroundingOs(i, j);
@@ -217,13 +219,13 @@ double penalty(int i, int j) {
 }
 
 // may be optimized
-bool metropolisCondition(double oldPenaltySum, double newPenaltySum) {
+bool metropolisCondition(float oldPenaltySum, float newPenaltySum) {
 	
 	bool ret = false;
 	
-	double randomValue = randomGenerator(0, 1); // Generate a random number in the range [0, 1]
+	float randomValue = randomGenerator(0, 1); // Generate a random number in the range [0, 1]
 		
-	double metropolisValue = exp(-((newPenaltySum - oldPenaltySum) / kT_eV)); // Calculate the Metropolis condition value
+	float metropolisValue = exp(-((newPenaltySum - oldPenaltySum) / kT_eV)); // Calculate the Metropolis condition value
 	
     // Compare the random value with the Metropolis criteria
     if (randomValue > metropolisValue) {
@@ -270,7 +272,6 @@ void jumping(tJumpCell& jumpCell) {
 	    int randomIndex = static_cast<int>(randomGenerator(0, jumpFreeSpaces.size() - 1)); // Generate a random index within the range of jumpFreeSpaces
 		
 	    // Get the corresponding new cell to jump
-	    tJumpCell jumpNewCell;
 	    jumpNewCell.cellTypeO.i = jumpFreeSpaces[randomIndex][0].cellTypeO.i;
 	    jumpNewCell.cellTypeO.j = jumpFreeSpaces[randomIndex][0].cellTypeO.j;
 	    jumpNewCell.penalty = 0.0;
@@ -287,17 +288,11 @@ void jumping(tJumpCell& jumpCell) {
         if (isJump == true) {
 			// Rewrite 2 to the new position in the grid vector
 			grid[jumpNewCell.cellTypeO.i][jumpNewCell.cellTypeO.j].value = 2;
-			grid[jumpCell.cellTypeO.i][jumpCell.cellTypeO.j].value = 7;
+			grid[jumpCell.cellTypeO.i][jumpCell.cellTypeO.j].value = 7; // clear old place
 			jumpingCounts++;
         }
 
-        // Clear fields of jumpCell
-        jumpCell.cellTypeO.i = -1;
-        jumpCell.cellTypeO.j = -1;
-        jumpCell.penalty = 0.0;
-
-        // Clear all elements of jumpFreeSpaces
-        jumpFreeSpaces.clear();
+        jumpFreeSpaces.clear(); // Clear all elements of jumpFreeSpaces
     }
 }
 
@@ -305,9 +300,6 @@ void jumping(tJumpCell& jumpCell) {
 void evolution(void) {
     
     while (iteration--) {
-    	
-    	tJumpCell jumpCell; // current cell
-    	
     	if (findOForJumping(jumpCell) == true) {
     		jumping(jumpCell); // checking local cell inside
 		}
@@ -381,7 +373,7 @@ void countCells(void) {
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			if (_SILICON(i,j)) {
-				if (grid[i][j].value == 0.0) {
+				if (grid[i][j].value == 0) {
 					countSi++;
 				}
 			}
@@ -433,7 +425,7 @@ void configurator(void) {
 //************************************************************************************************
 int main(int argc, char** argv) {
 	
-	double iter = iteration;
+	int iter = iteration;
     configurator();
 
     // Count Si; Oxygen
