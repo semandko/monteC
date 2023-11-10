@@ -44,14 +44,15 @@ float x; // Prompt the user to input the index of Oxygen (type O cell) in the ma
 int numberO;
 
 std::vector<std::vector<tRomb>> grid(n, std::vector<tRomb>(n, { {0, 0}, 1, 1 }));
-std::vector<std::vector<tJumpCell>> jumpFreeSpaces; // 
+std::vector<tJumpCell> jumpFreeSpaces; // 
 
 std::vector<float> Delta{0.0, 0.5, 0.51, 0.22, 0.0}; // penalty energy
 
+// surrounding for romb
 int di[] = {-1, 1, 0, 0}; // vertical
 int dj[] = {0, 0, -1, 1}; // horizontal
 		
-tJumpCell jumpNewCell;
+tJumpCell jumpNewCell; // cell in jumping
 tJumpCell jumpCell; // current cell
 
 float penaltyValue;
@@ -136,7 +137,6 @@ int countSurroundingOs(int i, int j) {
 			countPresent++;
 		}
 	}
-
     return countPresent;
 }
 
@@ -157,11 +157,7 @@ void countSurroundingRomb(int i, int j) {
                 jumpCell.cellTypeO.j = nj;
                 jumpCell.penalty = 0.0;
                 
-                // vector of structure tJumpCell
-                std::vector<tJumpCell> jumpCellVector; // Create a vector to hold the jumpCell
-                jumpCellVector.push_back(jumpCell);
-                // vector of vectors of structure tJumpCell
-                jumpFreeSpaces.push_back(jumpCellVector); // Push the vector containing jumpCell
+                jumpFreeSpaces.push_back(jumpCell); // Push the vector containing jumpCell
             }
         }
     } 
@@ -272,8 +268,8 @@ void jumping(tJumpCell& jumpCell) {
 	    int randomIndex = static_cast<int>(randomGenerator(0, jumpFreeSpaces.size() - 1)); // Generate a random index within the range of jumpFreeSpaces
 		
 	    // Get the corresponding new cell to jump
-	    jumpNewCell.cellTypeO.i = jumpFreeSpaces[randomIndex][0].cellTypeO.i;
-	    jumpNewCell.cellTypeO.j = jumpFreeSpaces[randomIndex][0].cellTypeO.j;
+	    jumpNewCell.cellTypeO.i = jumpFreeSpaces[randomIndex].cellTypeO.i;
+	    jumpNewCell.cellTypeO.j = jumpFreeSpaces[randomIndex].cellTypeO.j;
 	    jumpNewCell.penalty = 0.0;
 
         rombPenaltyCalculation(jumpNewCell); // Calculate the penalty for the new cell
@@ -341,26 +337,50 @@ void printMatrixToImage(const std::string& fileName) {
         colorMap[2] = "0 0 255 ";      // Blue
         colorMap[3] = "0 255 0 ";      // Green
         colorMap[4] = "255 255 0 ";    // Yellow
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (_SILICON(i,j)) { // [odd][odd] position calculation
-                    unsigned int value = countSurroundingOs(i, j);
-                    if (colorMap.find(value) != colorMap.end()) {
-                        outputFile << colorMap[value];
-                    }
-                }
-				else {
-                    // Set white color for cells that do not meet the condition
-                    outputFile << "255 255 255 ";
-                }
-            }
-            outputFile << "\n";
-        }
+		
+		unsigned int value =0;
+		
+		int countSi = 0;
+		int countO = 0;
+		int countGrid = 0;
+		
+		for (int i = 0; i < n; i++) {
+		    for (int j = 0; j < n; j++) {
+		    	
+		        if (_SILICON(i, j)) { // [odd][odd] position calculation
+		            value = countSurroundingOs(i, j);
+		            
+		            if (colorMap.find(value) != colorMap.end()) {
+		                outputFile << colorMap[value];
+		                countSi++;
+		            }
+		        }
+		        else
+				{
+		            if (_OXIGEN(i, j)) {
+		                outputFile << "255 192 203 "; // pink for O
+		                countO++;
+		            }
+		            else
+					{
+		                // [even][even] position calculation
+		                outputFile << "255 255 255 "; // white
+		                countGrid++;
+		            }
+		        }
+		    }
+		    outputFile << "\n";
+		}
+        
         outputFile.close();
         std::cout << "Matrix has been saved " << fileName << std::endl;
+        
+        std::cout << "Count Si " << countSi << std::endl;
+        std::cout << "Count Ox " << countO << std::endl;
+        std::cout << "Count Grid " << countGrid << std::endl;
     }
-	else {
+	else
+	{
         std::cerr << "Unable to save the image " << fileName << std::endl;
     }
 }
@@ -462,7 +482,7 @@ int main(int argc, char** argv) {
 	std::cout << "iteration = " << iter << std::endl;
     std::cout << "jumping counts = " << jumpingCounts << std::endl;
 
-    countCells();
+    //countCells();
 
     std::cin.get();
 
