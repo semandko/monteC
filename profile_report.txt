@@ -1,0 +1,256 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 36.82    337.93   337.93 3835698410     0.00     0.00  isNotPresentedOxigen(int, int)
+ 26.68    582.80   244.87 1000000000     0.00     0.00  findOxigen()
+ 19.36    760.49   177.69 1917849205     0.00     0.00  rombPenaltyCalculation(tJumpCell&)
+  5.39    810.00    49.51                             _mcount_private
+  4.28    849.30    39.30                             exp
+  3.34    879.95    30.65                             __fentry__
+  3.04    907.85    27.90 917849205     0.00     0.00  jumping()
+  0.87    915.80     7.95                             rand
+  0.22    917.79     1.99        1     1.99   790.38  evolution()
+  0.00    917.80     0.01        2     0.01     0.01  distributionSi()
+  0.00    917.81     0.01        2     0.01     0.01  printMatrixToImage(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00    917.81     0.00       14     0.00     0.00  __gcc_deregister_frame
+  0.00    917.81     0.00       10     0.00     0.00  std::char_traits<char>::length(char const*)
+  0.00    917.81     0.00       10     0.00     0.00  std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace(unsigned long long, unsigned long long, char const*, unsigned long long)
+  0.00    917.81     0.00        5     0.00     0.00  void std::vector<tJumpCell, std::allocator<tJumpCell> >::_M_realloc_insert<tJumpCell const&>(__gnu_cxx::__normal_iterator<tJumpCell*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell const&)
+  0.00    917.81     0.00        4     0.00     0.00  std::_Rb_tree<int, std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::_Select1st<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<int>, std::allocator<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::_M_erase(std::_Rb_tree_node<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >*)
+  0.00    917.81     0.00        2     0.00     0.00  printMatrixToTxt(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00    917.81     0.00        1     0.00     0.00  countCells()
+  0.00    917.81     0.00        1     0.00     0.00  fillMatrix()
+  0.00    917.81     0.00        1     0.00     0.00  fillOxigen()
+  0.00    917.81     0.00        1     0.00     0.00  configurator()
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 4 byte(s) for 0.00% of 917.81 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     86.1    0.00  790.40                 main [1]
+                1.99  788.39       1/1           evolution() [2]
+                0.01    0.00       2/2           printMatrixToImage(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [12]
+                0.01    0.00       2/2           distributionSi() [11]
+                0.00    0.00       6/10          std::char_traits<char>::length(char const*) [83]
+                0.00    0.00       4/14          __gcc_deregister_frame [82]
+                0.00    0.00       2/2           printMatrixToTxt(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [87]
+                0.00    0.00       1/1           fillOxigen() [90]
+                0.00    0.00       1/1           configurator() [91]
+                0.00    0.00       1/1           countCells() [88]
+-----------------------------------------------
+                1.99  788.39       1/1           main [1]
+[2]     86.1    1.99  788.39       1         evolution() [2]
+               27.90  246.77 917849205/917849205     jumping() [5]
+               92.65  176.20 1000000000/1917849205     rombPenaltyCalculation(tJumpCell&) [3]
+              244.87    0.00 1000000000/1000000000     findOxigen() [6]
+-----------------------------------------------
+               85.04  161.73 917849205/1917849205     jumping() [5]
+               92.65  176.20 1000000000/1917849205     evolution() [2]
+[3]     56.2  177.69  337.93 1917849205         rombPenaltyCalculation(tJumpCell&) [3]
+              337.93    0.00 3835698410/3835698410     isNotPresentedOxigen(int, int) [4]
+                0.00    0.00       1/5           void std::vector<tJumpCell, std::allocator<tJumpCell> >::_M_realloc_insert<tJumpCell const&>(__gnu_cxx::__normal_iterator<tJumpCell*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell const&) [85]
+-----------------------------------------------
+              337.93    0.00 3835698410/3835698410     rombPenaltyCalculation(tJumpCell&) [3]
+[4]     36.8  337.93    0.00 3835698410         isNotPresentedOxigen(int, int) [4]
+                0.00    0.00       4/5           void std::vector<tJumpCell, std::allocator<tJumpCell> >::_M_realloc_insert<tJumpCell const&>(__gnu_cxx::__normal_iterator<tJumpCell*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell const&) [85]
+-----------------------------------------------
+               27.90  246.77 917849205/917849205     evolution() [2]
+[5]     29.9   27.90  246.77 917849205         jumping() [5]
+               85.04  161.73 917849205/1917849205     rombPenaltyCalculation(tJumpCell&) [3]
+-----------------------------------------------
+              244.87    0.00 1000000000/1000000000     evolution() [2]
+[6]     26.7  244.87    0.00 1000000000         findOxigen() [6]
+-----------------------------------------------
+                                                 <spontaneous>
+[7]      5.4   49.51    0.00                 _mcount_private [7]
+-----------------------------------------------
+                                                 <spontaneous>
+[8]      4.3   39.30    0.00                 exp [8]
+-----------------------------------------------
+                                                 <spontaneous>
+[9]      3.3   30.65    0.00                 __fentry__ [9]
+-----------------------------------------------
+                                                 <spontaneous>
+[10]     0.9    7.95    0.00                 rand [10]
+-----------------------------------------------
+                0.01    0.00       2/2           main [1]
+[11]     0.0    0.01    0.00       2         distributionSi() [11]
+-----------------------------------------------
+                0.01    0.00       2/2           main [1]
+[12]     0.0    0.01    0.00       2         printMatrixToImage(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [12]
+                0.00    0.00      10/14          __gcc_deregister_frame [82]
+                0.00    0.00      10/10          std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace(unsigned long long, unsigned long long, char const*, unsigned long long) [84]
+                0.00    0.00       4/4           std::_Rb_tree<int, std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::_Select1st<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<int>, std::allocator<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::_M_erase(std::_Rb_tree_node<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >*) [86]
+-----------------------------------------------
+                0.00    0.00       4/14          main [1]
+                0.00    0.00      10/14          printMatrixToImage(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [12]
+[82]     0.0    0.00    0.00      14         __gcc_deregister_frame [82]
+-----------------------------------------------
+                0.00    0.00       4/10          __tcf_0 [192]
+                0.00    0.00       6/10          main [1]
+[83]     0.0    0.00    0.00      10         std::char_traits<char>::length(char const*) [83]
+-----------------------------------------------
+                0.00    0.00      10/10          printMatrixToImage(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [12]
+[84]     0.0    0.00    0.00      10         std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace(unsigned long long, unsigned long long, char const*, unsigned long long) [84]
+-----------------------------------------------
+                0.00    0.00       1/5           rombPenaltyCalculation(tJumpCell&) [3]
+                0.00    0.00       4/5           isNotPresentedOxigen(int, int) [4]
+[85]     0.0    0.00    0.00       5         void std::vector<tJumpCell, std::allocator<tJumpCell> >::_M_realloc_insert<tJumpCell const&>(__gnu_cxx::__normal_iterator<tJumpCell*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell const&) [85]
+-----------------------------------------------
+                                   6             std::_Rb_tree<int, std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::_Select1st<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<int>, std::allocator<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::_M_erase(std::_Rb_tree_node<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >*) [86]
+                0.00    0.00       4/4           printMatrixToImage(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [12]
+[86]     0.0    0.00    0.00       4+6       std::_Rb_tree<int, std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::_Select1st<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<int>, std::allocator<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::_M_erase(std::_Rb_tree_node<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >*) [86]
+                                   6             std::_Rb_tree<int, std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::_Select1st<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<int>, std::allocator<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::_M_erase(std::_Rb_tree_node<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >*) [86]
+-----------------------------------------------
+                0.00    0.00       2/2           main [1]
+[87]     0.0    0.00    0.00       2         printMatrixToTxt(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [87]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[88]     0.0    0.00    0.00       1         countCells() [88]
+-----------------------------------------------
+                0.00    0.00       1/1           configurator() [91]
+[89]     0.0    0.00    0.00       1         fillMatrix() [89]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[90]     0.0    0.00    0.00       1         fillOxigen() [90]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[91]     0.0    0.00    0.00       1         configurator() [91]
+                0.00    0.00       1/1           fillMatrix() [89]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2018 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [88] countCells()           [12] printMatrixToImage(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [84] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_replace(unsigned long long, unsigned long long, char const*, unsigned long long)
+  [89] fillMatrix()            [4] isNotPresentedOxigen(int, int) [86] std::_Rb_tree<int, std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::_Select1st<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<int>, std::allocator<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::_M_erase(std::_Rb_tree_node<std::pair<int const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >*)
+  [90] fillOxigen()            [3] rombPenaltyCalculation(tJumpCell&) [9] __fentry__
+   [6] findOxigen()            [5] jumping()              [82] __gcc_deregister_frame
+  [91] configurator()          [2] evolution()             [7] _mcount_private
+  [11] distributionSi()       [83] std::char_traits<char>::length(char const*) [8] exp
+  [87] printMatrixToTxt(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [85] void std::vector<tJumpCell, std::allocator<tJumpCell> >::_M_realloc_insert<tJumpCell const&>(__gnu_cxx::__normal_iterator<tJumpCell*, std::vector<tJumpCell, std::allocator<tJumpCell> > >, tJumpCell const&) [10] rand
